@@ -1,0 +1,10 @@
+{
+  "fastify": {
+    "logger": true,
+    "port": 8080,
+    "host": "localhost"
+  },
+  "logger": {
+    "level": "info"
+  }
+}
