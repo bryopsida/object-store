@@ -11,3 +11,4 @@ This is a simple service that stores objects on the local filesystem. Must be us
 - [ ] Implement service that can inspect defined storage areas and the amount of space available
 - [ ] Implement service that can save/delete/fetch/list objects in storage areas
 - [ ] Implement service that can phase out older files based on a retention policy and capacity of storage areas
+- [ ] Update README.md with usage instructions once implementation is further along.
