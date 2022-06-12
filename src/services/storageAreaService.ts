@@ -1,4 +1,7 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
+import fastifyPlugin from 'fastify-plugin'
+import checkDiskSpace from 'check-disk-space'
+import fs from 'fs/promises'
 
 export interface IStorageArea {
   name: string
@@ -10,6 +13,7 @@ export interface IStorageMetadata {
   spaceUsedMBytes: number
   spaceAvailableMBytes: number
   totalObjectCount: number
+  online: boolean
 }
 
 export interface IStorageAreaService {
@@ -28,16 +32,60 @@ export class StorageAreaService implements IStorageAreaService {
     this._areas = options.areas
   }
 
+  /**
+   * Resolves true if the area exists, false otherwise
+   * @param area The name of the area to check
+   */
   doesAreaExist (area: string): Promise<boolean> {
-    throw new Error('Method not implemented.')
+    return Promise.resolve(this._areas.some(a => a.name === area))
   }
 
-  getAreaMetaData (area: string): Promise<any> {
-    throw new Error('Method not implemented.')
+  /**
+   * Resolves the metadata for the area by inspecting the area's filesystem
+   * information
+   * @param area The name of the area to get the metadata for
+   */
+  async getAreaMetaData (area: string): Promise<IStorageMetadata > {
+    if (!await this.doesAreaExist(area)) {
+      throw new Error(`Area ${area} does not exist`)
+    }
+    const areaObject : IStorageArea | undefined = this._areas.find(a => a.name === area)
+    if (!areaObject) {
+      throw new Error(`Unable to retrieve area ${area}`)
+    }
+    const stat = await fs.stat(areaObject.path)
+    if (stat.isDirectory()) {
+      return {
+        spaceUsedMBytes: 0,
+        spaceAvailableMBytes: 0,
+        totalObjectCount: 0,
+        online: false
+      }
+    }
+    const objectCountPromise = await this.getAreaObjectCount(areaObject.path)
+    const spaceInfoPromise = await checkDiskSpace(areaObject.path)
+    return {
+      spaceUsedMBytes: spaceInfoPromise.size / 1024 / 1024,
+      spaceAvailableMBytes: spaceInfoPromise.free / 1024 / 1024,
+      totalObjectCount: objectCountPromise || 0,
+      online: true
+    }
   }
 
+  private async getAreaObjectCount (areaPath: string): Promise<number | undefined> {
+    // TODO: check performance on large folders, this builds a list of files in memory,
+    // which is not ideal but will probably be fine for sub 25k files
+    return (await fs.readdir(areaPath)).length
+  }
+
+  /**
+   * Returns the requested number of areas starting at the offset
+   * @param offset The number of areas to skip
+   * @param count The number of areas to return
+   */
   listAreas (offset: number, count: number): Promise<IStorageArea[]> {
-    throw new Error('Method not implemented.')
+    // currently all in memory, so lets just use array methods
+    return Promise.resolve(this._areas.slice(offset, offset + count))
   }
 }
 
@@ -48,7 +96,10 @@ declare module 'fastify' {
   }
 }
 
-export default function StorageAreaServicePlugin (fastify: FastifyInstance, opts: FastifyPluginOptions, done: Function) {
+/**
+ * Use fastify plugin to make these services available to fastify instance, can refactor in the future to scope to specific plugin controller scope
+ */
+export default fastifyPlugin(function StorageAreaServicePlugin (fastify: FastifyInstance, opts: FastifyPluginOptions, done: Function) {
   fastify.decorate('storageAreaService', new StorageAreaService(opts.areas))
   done()
-}
+}, '4.x')

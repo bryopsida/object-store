@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
+import fastifyPlugin from 'fastify-plugin'
 import { Stream } from 'stream'
 import { IStorageAreaService } from './storageAreaService'
 
@@ -63,8 +64,10 @@ export class ObjectStorageService implements IObjectStorageService {
     throw new Error('Method not implemented.')
   }
 }
-
-export default function ObjectStorageServicePlugin (fastify: FastifyInstance, opts: FastifyPluginOptions, done: Function) {
+/**
+ * Use fastify plugin to make these services available to fastify instance, can refactor in the future to scope to specific plugin controller scope
+ */
+export default fastifyPlugin(function ObjectStorageServicePlugin (fastify: FastifyInstance, opts: FastifyPluginOptions, done: Function) {
   fastify.decorate('objectStorageService', new ObjectStorageService(fastify.storageAreaService, opts))
   done()
-}
+}, '4.x')

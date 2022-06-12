@@ -85,9 +85,9 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     (fastify as any).verifyCredentials
   ]))
 
-  fastify.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.addHook('preHandler', async function (request: FastifyRequest, reply: FastifyReply) {
     const params : IAreaRequest = request.params as IAreaRequest
-    if (!await fastify.storageAreaService.doesAreaExist(params.area)) {
+    if (!await this.storageAreaService.doesAreaExist(params.area)) {
       reply.code(404)
       done(new Error(`Area ${params.area} does not exist`))
     }

@@ -11,12 +11,12 @@ export default function StorageStatusApiControllerPlugin (fastify : FastifyInsta
   // list areas
   fastify.get<{
     Querystring: IAreaSearchQuery
-  }>('/', async (request: FastifyRequest, reply: FastifyReply) => {
+  }>('/areas', async (request: FastifyRequest, reply: FastifyReply) => {
     reply.send({})
   })
 
   // get metadata information for area
-  fastify.get('/:area', async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get('/areas/:area', async (request: FastifyRequest, reply: FastifyReply) => {
     reply.send({})
   })
 

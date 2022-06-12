@@ -15,8 +15,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response time is less than 200ms\", () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
 									"})",
 									"",
 									"pm.test(\"Status code is 401\", () => {",
@@ -31,7 +31,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server_url}}/api/storage_status/v1/test",
+							"raw": "{{server_url}}/api/storage_status/v1/areas",
 							"host": [
 								"{{server_url}}"
 							],
@@ -39,7 +39,42 @@
 								"api",
 								"storage_status",
 								"v1",
-								"test"
+								"areas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Can List Storage Areas",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/storage_status/v1/areas",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"storage_status",
+								"v1",
+								"areas"
 							]
 						}
 					},
@@ -57,8 +92,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response time is less than 200ms\", () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
 									"})",
 									"",
 									"pm.test(\"Status code is 401\", () => {",
@@ -73,7 +108,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server_url}}/api/storage_status/v1/test",
+							"raw": "{{server_url}}/api/storage_status/v1/areas/test",
 							"host": [
 								"{{server_url}}"
 							],
@@ -81,7 +116,44 @@
 								"api",
 								"storage_status",
 								"v1",
+								"areas",
 								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Area Metadata",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/storage_status/v1/areas/default",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"storage_status",
+								"v1",
+								"areas",
+								"default"
 							]
 						}
 					},
