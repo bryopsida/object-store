@@ -1,4 +1,8 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
+import fs from 'fs/promises'
+import { createReadStream } from 'fs'
+import crypto from 'crypto'
+import path from 'path'
 import fastifyPlugin from 'fastify-plugin'
 import { Stream } from 'stream'
 import { IStorageAreaService } from './storageAreaService'
@@ -40,28 +44,86 @@ export class ObjectStorageService implements IObjectStorageService {
     this._storageAreaService = storageAreaService
   }
 
-  getObjectMetaData (area: string, id: string): Promise<IObjectMetaData> {
-    throw new Error('Method not implemented.')
+  private async getInternalFileName (id: string) : Promise<string> {
+    const normalized = id.toLowerCase()
+    return crypto.createHash('sha256').update(normalized).digest('base64')
   }
 
-  doesObjectExist (area: string, id: string): Promise<boolean> {
-    throw new Error('Method not implemented.')
+  private async getFilePath (area: string, id: string): Promise<string> {
+    const storageAreaMetaData = await this._storageAreaService.getArea(area)
+    if (!storageAreaMetaData) {
+      throw new Error('Area does not exist')
+    }
+    return path.join(storageAreaMetaData.path, await this.getInternalFileName(id))
   }
 
-  getObject (area: string, id: string): Promise<IObject> {
-    throw new Error('Method not implemented.')
+  private getMetaFilePath (filePath: string) : string {
+    return `${filePath}.meta.json`
   }
 
-  putObject (area: string, id: string, object: IObject): Promise<void> {
-    throw new Error('Method not implemented.')
+  private parseMetaData (metaData: string): IObjectMetaData {
+    // TODO: add validation here
+    return JSON.parse(metaData)
   }
 
-  deleteObject (area: string, id: string): Promise<void> {
-    throw new Error('Method not implemented.')
+  async getObjectMetaData (area: string, id: string): Promise<IObjectMetaData> {
+    const filePath = await this.getFilePath(area, id)
+    const metaPath = this.getMetaFilePath(filePath)
+    const metaData = await fs.readFile(metaPath, 'utf8')
+    return this.parseMetaData(metaData)
   }
 
-  listObjects (area: string, offset: number, count: number): Promise<IObjectMetaData[]> {
-    throw new Error('Method not implemented.')
+  async doesObjectExist (area: string, id: string): Promise<boolean> {
+    const filePath = await this.getFilePath(area, id)
+    return fs.access(filePath).then(() => true).catch(() => false)
+  }
+
+  async getObject (area: string, id: string): Promise<IObject> {
+    const fileName = await this.getFilePath(area, id)
+
+    // get a stream for the file itself
+    const stream = createReadStream(fileName)
+
+    // get the metadata
+    const metaData = this.parseMetaData(await fs.readFile(this.getMetaFilePath(fileName), 'utf8'))
+    return {
+      metaData,
+      stream
+    }
+  }
+
+  async putObject (area: string, id: string, object: IObject): Promise<void> {
+    const filePath = await this.getFilePath(area, id)
+    const metaFilePath = this.getMetaFilePath(filePath)
+    const metaData = {
+      id,
+      fileName: object.metaData.fileName,
+      mimeType: object.metaData.mimeType,
+      size: object.metaData.size,
+      lastModified: object.metaData.lastModified
+    }
+    const fileWriteProm = fs.writeFile(filePath, object.stream)
+    await fs.writeFile(metaFilePath, JSON.stringify(metaData))
+    await fileWriteProm
+  }
+
+  async deleteObject (area: string, id: string): Promise<void> {
+    const filePath = await this.getFilePath(area, id)
+    const metaFilePath = this.getMetaFilePath(filePath)
+    await fs.unlink(filePath)
+    await fs.unlink(metaFilePath)
+  }
+
+  // TODO: look at opendir to see if we can skip around the file system more effeciently
+  async listObjects (area: string, offset: number, count: number): Promise<IObjectMetaData[]> {
+    const areaPath = await this._storageAreaService.getArea(area)
+    if (!areaPath) {
+      throw new Error('Area does not exist')
+    }
+    const files = await fs.readdir(await areaPath.path)
+    const metaFiles = files.filter(file => file.endsWith('.meta.json'))
+    const subsetFiles = metaFiles.splice(offset, count)
+    return (await Promise.all(subsetFiles.map(async (file) => fs.readFile(path.join(areaPath.path, file), 'utf8')))).map(this.parseMetaData)
   }
 }
 /**

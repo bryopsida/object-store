@@ -18,6 +18,7 @@ export interface IStorageMetadata {
 
 export interface IStorageAreaService {
   doesAreaExist(area: string): Promise<boolean>
+  getArea(area: string): Promise<IStorageArea | undefined>
   getAreaMetaData(area: string): Promise<IStorageMetadata>
   listAreas(offset: number, count: number): Promise<IStorageArea[]>
 }
@@ -30,6 +31,15 @@ export class StorageAreaService implements IStorageAreaService {
   private readonly _areas: IStorageArea[]
   constructor (options: IStorageAreaServiceOptions) {
     this._areas = options.areas
+  }
+
+  /**
+   * resolves the area object for the given area name
+   * @param area The name of the area to get
+   * @returns The area object or undefined if the area does not exist
+   */
+  getArea (area: string): Promise<IStorageArea|undefined> {
+    return Promise.resolve(this._areas.find(a => a.name === area))
   }
 
   /**
