@@ -1,5 +1,5 @@
 # Object-Store
-This is a simple service that stores objects on the local filesystem. Must be used on combination with Object-Store-Router for sharding across multiple machines.
+This is a simple service that stores objects on the local filesystem. Must be used on combination with [https://github.com/bryopsida/object-store-sync](Object-Store-Router) for sharding across multiple machines, and [https://github.com/bryopsida/object-store-sync](Object-Store-Sync) to automatically push files as modified on a file system to the store.
 
 ## TODO
 - [ ] Create project + kanban board
