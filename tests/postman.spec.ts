@@ -30,7 +30,7 @@ describe('Postman collections', () => {
     jest.setTimeout(30000)
     it('Passess', (done) => {
       newman.run({
-        collection: require('../postman/objects.postman_collection.json'),
+        collection: require('../postman/object_storage.postman_collection.json'),
         environment: require('../postman/dev.postman_environment.json'),
         reporters: 'cli',
         timeout: 20000,

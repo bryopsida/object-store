@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "e442207e-a624-4541-9bad-72c85c3f608f",
+		"name": "Object Storage",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List Objects",
+			"item": [
+				{
+					"name": "Requires Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"})",
+									"",
+									"pm.test(\"Status code is 401\", () => {",
+									"  pm.response.to.have.status(401)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/objects/v1/",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"objects",
+								"v1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Download Object",
+			"item": [
+				{
+					"name": "Requires Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"})",
+									"",
+									"pm.test(\"Status code is 401\", () => {",
+									"  pm.response.to.have.status(401)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/objects/v1/area/object",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"objects",
+								"v1",
+								"area",
+								"object"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upload Object",
+			"item": [
+				{
+					"name": "Requires Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"})",
+									"",
+									"pm.test(\"Status code is 401\", () => {",
+									"  pm.response.to.have.status(401)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/objects/v1/test/test",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"objects",
+								"v1",
+								"test",
+								"test"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Object",
+			"item": [
+				{
+					"name": "Requires Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"})",
+									"",
+									"pm.test(\"Status code is 401\", () => {",
+									"  pm.response.to.have.status(401)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/objects/v1/test/test",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"objects",
+								"v1",
+								"test",
+								"test"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
