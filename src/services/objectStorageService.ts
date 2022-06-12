@@ -14,15 +14,10 @@ export interface IObject {
   metaData: IObjectMetaData
   stream: Stream
 }
-
-export interface IStorageMetadata {
-  spaceUsedMBytes: number
-  spaceAvailableMBytes: number
-  totalObjectCount: number
-}
 export interface IObjectStorageService {
   doesObjectExist(area: string, id: string): Promise<boolean>
   getObject(area: string, id: string): Promise<IObject>
+  getObjectMetaData(area: string, id: string): Promise<IObjectMetaData>
   putObject(area: string, id: string, object: IObject): Promise<void>
   deleteObject(area: string, id: string): Promise<void>
   listObjects(area: string, offset: number, count: number): Promise<IObjectMetaData[]>
@@ -42,6 +37,10 @@ export class ObjectStorageService implements IObjectStorageService {
 
   constructor (storageAreaService: IStorageAreaService, opts: Record<string, any>) {
     this._storageAreaService = storageAreaService
+  }
+
+  getObjectMetaData (area: string, id: string): Promise<IObjectMetaData> {
+    throw new Error('Method not implemented.')
   }
 
   doesObjectExist (area: string, id: string): Promise<boolean> {

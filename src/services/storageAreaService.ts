@@ -1,12 +1,20 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
 
 export interface IStorageArea {
+  name: string
+  description: string
+  path: string
+}
 
+export interface IStorageMetadata {
+  spaceUsedMBytes: number
+  spaceAvailableMBytes: number
+  totalObjectCount: number
 }
 
 export interface IStorageAreaService {
   doesAreaExist(area: string): Promise<boolean>
-  getAreaMetaData(area: string): Promise<any>
+  getAreaMetaData(area: string): Promise<IStorageMetadata>
   listAreas(offset: number, count: number): Promise<IStorageArea[]>
 }
 

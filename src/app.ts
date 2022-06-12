@@ -1,5 +1,6 @@
 import { FastifyInstance, fastify, FastifyServerOptions } from 'fastify'
 import helmet from '@fastify/helmet'
+import multipart from '@fastify/multipart'
 import authPlugin from './auth/authPlugin'
 import routes from './routes'
 import config from 'config'
@@ -26,10 +27,19 @@ export default class App {
     })
     this.configureSecurityPolicy()
     this.configureAuth()
+    this.configureMiddleware()
     this.configureServices()
     this.configureRoutes()
     this._server.log.info('Finished configuration, ready to start listening')
     this._isRunning = false
+  }
+
+  /**
+   * Register micsallaneous middleware here
+   */
+  private configureMiddleware () {
+    this._server.log.info('Registering middleware')
+    this._server.register(multipart)
   }
 
   /**
