@@ -3,6 +3,8 @@ import helmet from '@fastify/helmet'
 import authPlugin from './auth/authPlugin'
 import routes from './routes'
 import config from 'config'
+import storageAreaService from './services/storageAreaService'
+import objectStorageService from './services/objectStorageService'
 
 export interface AppOptions {
   serverOptions: FastifyServerOptions;
@@ -24,6 +26,7 @@ export default class App {
     })
     this.configureSecurityPolicy()
     this.configureAuth()
+    this.configureServices()
     this.configureRoutes()
     this._server.log.info('Finished configuration, ready to start listening')
     this._isRunning = false
@@ -35,6 +38,15 @@ export default class App {
   private configureSecurityPolicy () {
     this._server.log.info('Registering security policy')
     this._server.register(helmet)
+  }
+
+  private configureServices () {
+    this._server.log.info('Registering services')
+    this._server.register(storageAreaService, {
+      areas: config.get('storage.areas')
+    }).after(() => {
+      this._server.register(objectStorageService)
+    })
   }
 
   /**
