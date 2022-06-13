@@ -3,7 +3,6 @@ import { Stream } from 'stream'
 import { IObject, IObjectMetaData } from '../services/objectStorageService'
 
 export interface IObjectSearchQuery {
-  area: string
   offset: number
   count: number
 }
@@ -33,12 +32,6 @@ export interface IAreaRequest {
 export interface IAreaAndObjectRequest extends IAreaRequest {
   id: string
 }
-export interface IObjectUploadHeaders {
-  'content-type': string
-  'content-length': number
-  'x-filename': string
-  'last-modified': string
-}
 
 export class ObjectMetaDTO implements IObjectMetaDTO {
   private readonly _id: string
@@ -52,7 +45,7 @@ export class ObjectMetaDTO implements IObjectMetaDTO {
     this._fileName = objectMetaDTO.fileName
     this._lastModified = objectMetaDTO.lastModified
     this._mimeType = objectMetaDTO.mimeType
-    this._size = objectMetaDTO.size
+    this._size = objectMetaDTO.size || -1
   }
 
   get id (): string {
@@ -75,6 +68,16 @@ export class ObjectMetaDTO implements IObjectMetaDTO {
     return this._lastModified
   }
 
+  public toJSON (): any {
+    return {
+      id: this._id,
+      fileName: this._fileName,
+      mimeType: this._mimeType,
+      size: this._size,
+      lastModified: this._lastModified?.toISOString()
+    }
+  }
+
   static fromObjectMetaData (objectMetaData: IObjectMetaData): IObjectMetaDTO {
     return new ObjectMetaDTO(objectMetaData)
   }
@@ -85,9 +88,9 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     (fastify as any).verifyCredentials
   ]))
 
-  fastify.addHook('preHandler', async function (request: FastifyRequest, reply: FastifyReply) {
+  fastify.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaRequest = request.params as IAreaRequest
-    if (!await this.storageAreaService.doesAreaExist(params.area)) {
+    if (!await fastify.storageAreaService.doesAreaExist(params.area)) {
       reply.code(404)
       done(new Error(`Area ${params.area} does not exist`))
     }
@@ -101,13 +104,14 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     Params: IAreaRequest
   }>('/:area', async (request: FastifyRequest, reply: FastifyReply) => {
     const query: IObjectSearchQuery = request.query as IObjectSearchQuery
-    const areaMetaData = await fastify.storageAreaService.getAreaMetaData(query.area)
+    const params = request.params as IAreaRequest
+    const areaMetaData = await fastify.storageAreaService.getAreaMetaData(params.area)
     if (areaMetaData.totalObjectCount <= query.offset) {
-      reply.code(400).send({
+      return reply.code(400).send({
         error: 'Offset is greater than total object count'
       })
     }
-    const listResult = await fastify.objectStorageService.listObjects(query.area, query.offset, query.count)
+    const listResult = await fastify.objectStorageService.listObjects(params.area, query.offset, query.count)
     reply.send({
       total: areaMetaData.totalObjectCount,
       offset: query.offset,
@@ -126,28 +130,26 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     reply.type(object.metaData.mimeType)
       .header('Content-Disposition', `attachment; filename="${object.metaData.fileName}"`)
       .header('Content-Length', object.metaData.size)
-      .header('Last-Modified', object.metaData.lastModified.toUTCString())
+      .header('Last-Modified', object.metaData.lastModified?.toUTCString())
       .send(object.stream)
     reply.send()
   })
 
   // upload object
   fastify.put<{
-    Headers: IObjectUploadHeaders,
     Params: IAreaAndObjectRequest,
-    Body: Stream,
     Reply: ErrorResponse | IObjectMetaData
   }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
-    const headers : IObjectUploadHeaders = request.headers as unknown as IObjectUploadHeaders
+    const file = await request.file()
     await fastify.objectStorageService.putObject(params.area, params.id, {
       metaData: {
-        fileName: headers['x-filename'],
-        mimeType: headers['content-type'],
-        size: headers['content-length'],
+        fileName: file.filename,
+        mimeType: file.mimetype,
+        lastModified: new Date(),
         id: params.id
       },
-      stream: request.body
+      stream: file.file
     } as IObject)
     const metaData: IObjectMetaDTO = ObjectMetaDTO.fromObjectMetaData(await fastify.objectStorageService.getObjectMetaData(params.area, params.id))
     reply.send(metaData)

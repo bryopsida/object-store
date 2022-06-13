@@ -30,7 +30,17 @@ export interface IStorageAreaServiceOptions {
 export class StorageAreaService implements IStorageAreaService {
   private readonly _areas: IStorageArea[]
   constructor (options: IStorageAreaServiceOptions) {
+    if (!options.areas) {
+      throw new Error('No areas provided')
+    }
     this._areas = options.areas
+    this._areas.forEach(async area => {
+      try {
+        await fs.stat(area.path)
+      } catch (err) {
+        await fs.mkdir(area.path)
+      }
+    })
   }
 
   /**
@@ -64,7 +74,7 @@ export class StorageAreaService implements IStorageAreaService {
       throw new Error(`Unable to retrieve area ${area}`)
     }
     const stat = await fs.stat(areaObject.path)
-    if (stat.isDirectory()) {
+    if (!stat.isDirectory()) {
       return {
         spaceUsedMBytes: 0,
         spaceAvailableMBytes: 0,
@@ -110,6 +120,8 @@ declare module 'fastify' {
  * Use fastify plugin to make these services available to fastify instance, can refactor in the future to scope to specific plugin controller scope
  */
 export default fastifyPlugin(function StorageAreaServicePlugin (fastify: FastifyInstance, opts: FastifyPluginOptions, done: Function) {
-  fastify.decorate('storageAreaService', new StorageAreaService(opts.areas))
+  fastify.decorate('storageAreaService', new StorageAreaService({
+    areas: opts.areas
+  }))
   done()
 }, '4.x')

@@ -11,7 +11,7 @@ export interface IObjectMetaData {
   id: string
   fileName: string
   mimeType: string
-  size: number
+  size?: number
   lastModified: Date
 }
 
@@ -46,7 +46,7 @@ export class ObjectStorageService implements IObjectStorageService {
 
   private async getInternalFileName (id: string) : Promise<string> {
     const normalized = id.toLowerCase()
-    return crypto.createHash('sha256').update(normalized).digest('base64')
+    return crypto.createHash('sha256').update(normalized).digest('hex')
   }
 
   private async getFilePath (area: string, id: string): Promise<string> {
@@ -102,8 +102,13 @@ export class ObjectStorageService implements IObjectStorageService {
       size: object.metaData.size,
       lastModified: object.metaData.lastModified
     }
-    const fileWriteProm = fs.writeFile(filePath, object.stream)
-    await fs.writeFile(metaFilePath, JSON.stringify(metaData))
+    const fileWriteProm = fs.writeFile(filePath, object.stream, {
+      flag: 'w'
+    })
+    await fs.writeFile(metaFilePath, JSON.stringify(metaData), {
+      encoding: 'utf8',
+      flag: 'w'
+    })
     await fileWriteProm
   }
 

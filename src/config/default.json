@@ -10,8 +10,9 @@
   "storage": {
     "areas": [
       {
-        "id": "default",
-        "path": "/tmp/default"
+        "name": "default",
+        "path": "/tmp/default",
+        "description": "Default area"
       }
     ]
   }
