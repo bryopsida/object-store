@@ -102,14 +102,16 @@ export class ObjectStorageService implements IObjectStorageService {
       size: object.metaData.size,
       lastModified: object.metaData.lastModified
     }
-    const fileWriteProm = fs.writeFile(filePath, object.stream, {
+    await fs.writeFile(filePath, object.stream, {
       flag: 'w'
     })
+    // get actual file size
+    const fileStats = await fs.stat(filePath)
+    metaData.size = fileStats.size
     await fs.writeFile(metaFilePath, JSON.stringify(metaData), {
       encoding: 'utf8',
       flag: 'w'
     })
-    await fileWriteProm
   }
 
   async deleteObject (area: string, id: string): Promise<void> {

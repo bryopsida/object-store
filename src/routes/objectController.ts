@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify'
+import { send } from 'process'
 import { Stream } from 'stream'
 import { IObject, IObjectMetaData } from '../services/objectStorageService'
 
@@ -127,12 +128,11 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
   }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
     const object = await fastify.objectStorageService.getObject(params.area, params.id)
-    reply.type(object.metaData.mimeType)
+    await reply.type(object.metaData.mimeType)
       .header('Content-Disposition', `attachment; filename="${object.metaData.fileName}"`)
       .header('Content-Length', object.metaData.size)
       .header('Last-Modified', object.metaData.lastModified != null ? typeof object.metaData.lastModified === 'string' ? object.metaData.lastModified : object.metaData.lastModified.toUTCString() : undefined)
       .send(object.stream)
-    reply.send()
   })
 
   // upload object
