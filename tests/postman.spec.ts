@@ -93,7 +93,7 @@ describe('Postman collections', () => {
         timeout: 20000,
         timeoutRequest: 3000,
         timeoutScript: 3000,
-        workingDir: workingDir,
+        workingDir,
         requestAgents: {
           http: agent
         }
