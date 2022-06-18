@@ -88,15 +88,6 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     (fastify as any).verifyCredentials
   ]))
 
-  fastify.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
-    const params : IAreaRequest = request.params as IAreaRequest
-    if (!await fastify.storageAreaService.doesAreaExist(params.area)) {
-      reply.code(404)
-      done(new Error(`Area ${params.area} does not exist`))
-    }
-    done()
-  })
-
   // list objects
   fastify.get<{
     Querystring: IObjectSearchQuery,
@@ -115,6 +106,12 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const query: IObjectSearchQuery = request.query as IObjectSearchQuery
     const params = request.params as IAreaRequest
+    // Todo: move to shared validation to reduce repeat code for area check
+    if (!await fastify.storageAreaService.doesAreaExist(params.area)) {
+      return reply.code(404).send({
+        error: `Area ${params.area} does not exist`
+      })
+    }
     const areaMetaData = await fastify.storageAreaService.getAreaMetaData(params.area)
     if (areaMetaData.totalObjectCount <= query.offset) {
       return reply.code(400).send({
@@ -155,6 +152,11 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     Reply: ErrorResponse | IObjectMetaData
   }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
+    if (!await fastify.storageAreaService.doesAreaExist(params.area)) {
+      return reply.code(404).send({
+        error: `Area ${params.area} does not exist`
+      })
+    }
     const file = await request.file()
     await fastify.objectStorageService.putObject(params.area, params.id, {
       metaData: {

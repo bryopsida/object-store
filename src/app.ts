@@ -6,6 +6,7 @@ import routes from './routes'
 import config from 'config'
 import storageAreaService from './services/storageAreaService'
 import objectStorageService from './services/objectStorageService'
+import userService from './services/userService'
 
 export interface AppOptions {
   serverOptions: FastifyServerOptions;
@@ -56,6 +57,10 @@ export default class App {
       areas: config.get('storage.areas')
     }).after(() => {
       this._server.register(objectStorageService)
+    }).after(() => {
+      this._server.register(userService, {
+        userStorePath: config.get<string>('auth.userStorePath')
+      })
     })
   }
 

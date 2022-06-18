@@ -1,0 +1,5 @@
+{
+  "auth": {
+    "userStorePath": "OBJ_STORE_AUTH_USER_STORE_PATH"
+  }
+}

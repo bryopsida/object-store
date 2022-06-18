@@ -1,0 +1,5 @@
+{
+  "admin": {
+    "password": "$argon2i$v=19$m=4096,t=3,p=1$weORIIfZknyJ3YJ10XHbpg$AXhRZfun+qGwA10md6cjrFVT5NuHfopgaiit8Mb6zXk"
+  }
+}

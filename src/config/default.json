@@ -1,4 +1,7 @@
 {
+  "auth": {
+    "userStorePath": "../config/users.json"
+  }, 
   "fastify": {
     "logger": true,
     "port": 8080,
