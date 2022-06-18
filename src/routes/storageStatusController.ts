@@ -25,7 +25,7 @@ export default function StorageStatusApiControllerPlugin (fastify : FastifyInsta
     Params: IAreaRequestParams
   }>('/areas/:area', async (request: FastifyRequest, reply: FastifyReply) => {
     const pathParams :IAreaRequestParams = request.params as IAreaRequestParams
-    if (!fastify.storageAreaService.doesAreaExist(pathParams.area)) {
+    if (!await fastify.storageAreaService.doesAreaExist(pathParams.area)) {
       return reply.code(404).send({
         error: 'Area not found'
       })

@@ -126,6 +126,11 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     Reply: ErrorResponse | Stream
   }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
+    if (!await fastify.objectStorageService.doesObjectExist(params.area, params.id)) {
+      return reply.code(404).send({
+        error: `The object ${params.id} or area ${params.area} does not exist!`
+      })
+    }
     const object = await fastify.objectStorageService.getObject(params.area, params.id)
     await reply.type(object.metaData.mimeType)
       .header('Content-Disposition', `attachment; filename="${object.metaData.fileName}"`)

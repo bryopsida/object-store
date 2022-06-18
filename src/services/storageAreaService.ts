@@ -95,7 +95,9 @@ export class StorageAreaService implements IStorageAreaService {
   private async getAreaObjectCount (areaPath: string): Promise<number | undefined> {
     // TODO: check performance on large folders, this builds a list of files in memory,
     // which is not ideal but will probably be fine for sub 25k files
-    return (await fs.readdir(areaPath)).length
+    // assume unmixed content, otherwise we will need to add more logic
+    // actual count is half of the file count due to meta files
+    return (await fs.readdir(areaPath)).length / 2
   }
 
   /**
