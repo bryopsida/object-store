@@ -11,12 +11,12 @@
     "level": "info"
   },
   "storage": {
-    "areas": [
-      {
+    "areas": {
+      "default": {
         "name": "default",
         "path": "/tmp/default",
         "description": "Default area"
       }
-    ]
+    }
   }
 }

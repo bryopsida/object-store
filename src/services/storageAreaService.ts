@@ -25,7 +25,7 @@ export interface IStorageAreaService {
 }
 
 export interface IStorageAreaServiceOptions {
-  areas: IStorageArea[]
+  areas: Record<string, IStorageArea>
 }
 
 export class StorageAreaService implements IStorageAreaService {
@@ -34,7 +34,7 @@ export class StorageAreaService implements IStorageAreaService {
     if (!options.areas) {
       throw new Error('No areas provided')
     }
-    this._areas = options.areas
+    this._areas = Object.keys(options.areas).map((k) => options.areas[k])
     this._areas.forEach(async area => {
       try {
         await fs.stat(area.path)

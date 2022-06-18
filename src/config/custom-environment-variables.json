@@ -1,5 +1,12 @@
 {
   "auth": {
     "userStorePath": "OBJ_STORE_AUTH_USER_STORE_PATH"
+  },
+  "storage": {
+    "areas": {
+      "default": {
+        "path": "OBJ_STORE_STORAGE_AREAS_DEFAULT_PATH"
+      }
+    }
   }
 }
