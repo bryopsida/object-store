@@ -81,6 +81,8 @@ describe('Postman collections', () => {
     agent.destroy()
   })
   describe('Object Storage', () => {
+    const workingDir = path.resolve(process.cwd(), 'postman')
+    console.log(`Using ${workingDir} for postman working directory`)
     // increase time since this is E2E test
     jest.setTimeout(30000)
     it('Passess', (done) => {
@@ -91,7 +93,7 @@ describe('Postman collections', () => {
         timeout: 20000,
         timeoutRequest: 3000,
         timeoutScript: 3000,
-        workingDir: path.resolve(process.cwd(), 'postman'),
+        workingDir: workingDir,
         requestAgents: {
           http: agent
         }
