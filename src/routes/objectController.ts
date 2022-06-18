@@ -1,5 +1,4 @@
 import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify'
-import { send } from 'process'
 import { Stream } from 'stream'
 import { IObject, IObjectMetaData } from '../services/objectStorageService'
 
