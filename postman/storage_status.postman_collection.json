@@ -59,7 +59,15 @@
 									"",
 									"pm.test(\"Status code is 200\", () => {",
 									"  pm.response.to.have.status(200)",
-									"});"
+									"});",
+									"",
+									"pm.test(\"Result values should match expected result\", () => {",
+									"    const result = pm.response.json()",
+									"    pm.expect(result.offset).to.be.eq(0)",
+									"    pm.expect(result.total).to.be.eq(1)",
+									"    pm.expect(result.count).to.be.eq(1)",
+									"    pm.expect(result.areas.length).to.be.eq(1)",
+									"})"
 								],
 								"type": "text/javascript"
 							}
@@ -84,7 +92,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server_url}}/api/storage_status/v1/areas",
+							"raw": "{{server_url}}/api/storage_status/v1/areas?offset=0&count=10",
 							"host": [
 								"{{server_url}}"
 							],
@@ -93,6 +101,16 @@
 								"storage_status",
 								"v1",
 								"areas"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "count",
+									"value": "10"
+								}
 							]
 						}
 					},

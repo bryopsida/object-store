@@ -21,6 +21,7 @@ export interface IStorageAreaService {
   getArea(area: string): Promise<IStorageArea | undefined>
   getAreaMetaData(area: string): Promise<IStorageMetadata>
   listAreas(offset: number, count: number): Promise<IStorageArea[]>
+  getTotalAreaCount(): Promise<number>
 }
 
 export interface IStorageAreaServiceOptions {
@@ -41,6 +42,14 @@ export class StorageAreaService implements IStorageAreaService {
         await fs.mkdir(area.path)
       }
     })
+  }
+
+  /**
+   * Provides the total area count
+   * @returns Promise that resolves with the number of areas configured
+   */
+  getTotalAreaCount (): Promise<number> {
+    return Promise.resolve(this._areas.length)
   }
 
   /**

@@ -15,9 +15,26 @@ export default function StorageStatusApiControllerPlugin (fastify : FastifyInsta
   // list areas
   fastify.get<{
     Querystring: IAreaSearchQuery
-  }>('/areas', async (request: FastifyRequest, reply: FastifyReply) => {
+  }>('/areas', {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          count: { type: 'number' },
+          offset: { type: 'number' }
+        }
+      }
+    }
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     const listQuery : IAreaSearchQuery = request.query as IAreaSearchQuery
-    reply.send(await fastify.storageAreaService.listAreas(listQuery.offset, listQuery.count))
+    const totalAreaCount = await fastify.storageAreaService.getTotalAreaCount()
+    const areas = await fastify.storageAreaService.listAreas(listQuery.offset, listQuery.count)
+    reply.send({
+      total: totalAreaCount,
+      offset: listQuery.offset,
+      count: areas.length,
+      areas
+    })
   })
 
   // get metadata information for area

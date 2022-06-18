@@ -102,7 +102,17 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     Querystring: IObjectSearchQuery,
     Reply: IPaginatedObjectMetaDataResponse | ErrorResponse
     Params: IAreaRequest
-  }>('/:area', async (request: FastifyRequest, reply: FastifyReply) => {
+  }>('/:area', {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          count: { type: 'number' },
+          offset: { type: 'number' }
+        }
+      }
+    }
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     const query: IObjectSearchQuery = request.query as IObjectSearchQuery
     const params = request.params as IAreaRequest
     const areaMetaData = await fastify.storageAreaService.getAreaMetaData(params.area)
@@ -114,7 +124,7 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     const listResult = await fastify.objectStorageService.listObjects(params.area, query.offset, query.count)
     reply.send({
       total: areaMetaData.totalObjectCount,
-      offset: query.offset,
+      offset: parseInt(query.offset as any),
       count: listResult.length,
       objects: listResult.map(ObjectMetaDTO.fromObjectMetaData)
     } as IPaginatedObjectMetaDataResponse)
