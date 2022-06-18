@@ -3,10 +3,36 @@
 import App from '../src/app'
 import newman from 'newman'
 import { Agent } from 'http'
+import axios from 'axios'
+import FormData from 'form-data'
+import path from 'path'
 
 describe('Postman collections', () => {
   let app: App
   let agent: Agent
+
+  async function uploadFile (area: string, id: string, fileName: string, buffer: Buffer) : Promise<any> {
+    const formData = new FormData()
+    formData.append('file', buffer, fileName)
+    await axios.put(`http://localhost:3000/api/objects/v1/${area}/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      auth: {
+        username: 'admin',
+        password: 'admin'
+      }
+    })
+  }
+
+  async function deleteFile (area: string, id: string) : Promise<any> {
+    await axios.delete(`http://localhost:3000/api/objects/v1/${area}/${id}`, {
+      auth: {
+        username: 'admin',
+        password: 'admin'
+      }
+    })
+  }
 
   beforeAll(async () => {
     agent = new Agent()
@@ -19,9 +45,38 @@ describe('Postman collections', () => {
       host: 'localhost'
     })
     await app.start()
+    // populate stuff for postman
+    // need the following files created
+    const dummyFileContents = {
+      test: 'test'
+    }
+
+    const jStr = JSON.stringify(dummyFileContents)
+    const blob = Buffer.from(jStr)
+    try {
+      // postman_test_list_upload
+      await uploadFile('default', 'postman_test_list_upload', 'postman_test.json', blob)
+      // postman_test_download
+      await uploadFile('default', 'postman_test_download', 'postman_test.json', blob)
+      // postman_test_upload
+      await uploadFile('default', 'postman_test_upload', 'postman_test.json', blob)
+      // postman_test_delete
+      await uploadFile('default', 'postman_test_delete', 'postman_test.json', blob)
+    } catch (err) {
+      console.error(`Error while creating test files ${err}`)
+    }
   })
   afterAll(async () => {
     console.log('Stopping app for postman tests')
+    try {
+      await deleteFile('default', 'postman_test_list_upload')
+      await deleteFile('default', 'postman_test_download')
+      await deleteFile('default', 'postman_test_upload')
+      await deleteFile('default', 'postman_test_delete')
+    } catch (err) {
+      console.error(`Error while cleaning up test resources: ${err}`)
+    }
+
     await app.stop()
     agent.destroy()
   })
@@ -36,6 +91,7 @@ describe('Postman collections', () => {
         timeout: 20000,
         timeoutRequest: 3000,
         timeoutScript: 3000,
+        workingDir: path.resolve(process.cwd(), 'postman'),
         requestAgents: {
           http: agent
         }

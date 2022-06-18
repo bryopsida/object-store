@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "e442207e-a624-4541-9bad-72c85c3f608f",
 		"name": "Object Storage",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "227389"
 	},
 	"item": [
 		{
@@ -63,6 +64,15 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -84,7 +94,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server_url}}/api/objects/v1/default/",
+							"raw": "{{server_url}}/api/objects/v1/default?offset=0&limit=10",
 							"host": [
 								"{{server_url}}"
 							],
@@ -92,8 +102,17 @@
 								"api",
 								"objects",
 								"v1",
-								"default",
-								""
+								"default"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
 							]
 						}
 					},
@@ -155,7 +174,23 @@
 									"",
 									"pm.test(\"Status code is 200\", () => {",
 									"  pm.response.to.have.status(200)",
-									"});"
+									"});",
+									"",
+									"pm.test(\"Response should have expected property\", () => {",
+									"  const expectedObject = {",
+									"    \"test\": \"test\"",
+									"  };",
+									"  pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -222,6 +257,16 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
 						"url": {
 							"raw": "{{server_url}}/api/objects/v1/test/test",
 							"host": [
@@ -275,6 +320,16 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-file-upload.json"
+								}
+							]
+						},
 						"url": {
 							"raw": "{{server_url}}/api/objects/v1/default/postman_test_upload",
 							"host": [

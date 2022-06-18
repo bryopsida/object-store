@@ -74,7 +74,7 @@ export class ObjectMetaDTO implements IObjectMetaDTO {
       fileName: this._fileName,
       mimeType: this._mimeType,
       size: this._size,
-      lastModified: this._lastModified?.toISOString()
+      lastModified: this._lastModified == null ? null : (typeof this._lastModified === 'string' ? this._lastModified : this._lastModified.toISOString())
     }
   }
 
@@ -130,7 +130,7 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     reply.type(object.metaData.mimeType)
       .header('Content-Disposition', `attachment; filename="${object.metaData.fileName}"`)
       .header('Content-Length', object.metaData.size)
-      .header('Last-Modified', object.metaData.lastModified?.toUTCString())
+      .header('Last-Modified', object.metaData.lastModified != null ? typeof object.metaData.lastModified === 'string' ? object.metaData.lastModified : object.metaData.lastModified.toUTCString() : undefined)
       .send(object.stream)
     reply.send()
   })
@@ -152,7 +152,7 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
       stream: file.file
     } as IObject)
     const metaData: IObjectMetaDTO = ObjectMetaDTO.fromObjectMetaData(await fastify.objectStorageService.getObjectMetaData(params.area, params.id))
-    reply.send(metaData)
+    reply.code(200).send(metaData)
   })
 
   // delete object
@@ -160,8 +160,8 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     Params: IAreaAndObjectRequest
   }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
-    if (await fastify.objectStorageService.doesObjectExist(params.area, params.id)) {
-      reply.code(404).send({
+    if (!await fastify.objectStorageService.doesObjectExist(params.area, params.id)) {
+      return reply.code(404).send({
         error: `Object ${params.id} does not exist in area ${params.area}`
       })
     }
