@@ -39,7 +39,7 @@ describe('Postman collections', () => {
     console.log('Starting app for postman tests')
     app = new App({
       serverOptions: {
-        logger: false
+        logger: true
       },
       port: 3000,
       host: 'localhost'
