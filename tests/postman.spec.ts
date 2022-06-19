@@ -35,16 +35,19 @@ describe('Postman collections', () => {
   }
 
   beforeAll(async () => {
-    agent = new Agent()
-    console.log('Starting app for postman tests')
-    app = new App({
-      serverOptions: {
-        logger: true
-      },
-      port: 3000,
-      host: 'localhost'
-    })
-    await app.start()
+    if (!process.env.OBJ_STORE_SKIP_APP_LAUNCH) {
+      agent = new Agent()
+      console.log('Starting app for postman tests')
+      app = new App({
+        serverOptions: {
+          logger: true
+        },
+        port: 3000,
+        host: 'localhost'
+      })
+      await app.start()
+    }
+
     // populate stuff for postman
     // need the following files created
     const dummyFileContents = {
@@ -76,9 +79,10 @@ describe('Postman collections', () => {
     } catch (err) {
       console.error(`Error while cleaning up test resources: ${err}`)
     }
-
-    await app.stop()
-    agent.destroy()
+    if (!process.env.OBJ_STORE_SKIP_APP_LAUNCH) {
+      await app.stop()
+      agent.destroy()
+    }
   })
   describe('Object Storage', () => {
     const workingDir = path.resolve(process.cwd(), 'postman')
@@ -88,7 +92,7 @@ describe('Postman collections', () => {
     it('Passess', (done) => {
       newman.run({
         collection: require('../postman/object_storage.postman_collection.json'),
-        environment: require('../postman/dev.postman_environment.json'),
+        environment: require(`../postman/${process.env.OBJ_STORE_PM_ENV || 'dev'}.postman_environment.json`),
         reporters: 'cli',
         timeout: 20000,
         timeoutRequest: 3000,
@@ -117,7 +121,7 @@ describe('Postman collections', () => {
     it('Passess', (done) => {
       newman.run({
         collection: require('../postman/storage_status.postman_collection.json'),
-        environment: require('../postman/dev.postman_environment.json'),
+        environment: require(`../postman/${process.env.OBJ_STORE_PM_ENV || 'dev'}.postman_environment.json`),
         reporters: 'cli',
         timeout: 20000,
         timeoutRequest: 3000,

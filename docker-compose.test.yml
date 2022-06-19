@@ -1,0 +1,15 @@
+services:
+  object-store:
+    environment:
+      OBJ_STORE_SKIP_APP_LAUNCH: true
+      OBJ_STORE_PM_ENV: docker
+    build:
+      context: .
+      dockerfile: Dockerfile
+  sut:
+    depends_on:
+    - object-store
+    build:
+      context: .
+      dockerfile: ./sut.Dockerfile 
+    command: npm test -- -t "Postman collections"
