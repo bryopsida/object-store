@@ -1,8 +1,8 @@
 services:
   object-store:
     environment:
-      OBJ_STORE_SKIP_APP_LAUNCH: true
-      OBJ_STORE_PM_ENV: docker
+      OBJ_STORE_SKIP_APP_LAUNCH: "true"
+      OBJ_STORE_PM_ENV: "docker"
     build:
       context: .
       dockerfile: Dockerfile
