@@ -52,6 +52,8 @@ jobs:
         uses: docker/metadata-action@97c170d70b5f8bfc77e6b23e68381f217cb64ded
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=true
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -69,7 +71,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           builder: ${{ steps.buildx.outputs.name }}
-          load: true
+          load: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
