@@ -14,7 +14,7 @@ describe('Postman collections', () => {
   async function uploadFile (area: string, id: string, fileName: string, buffer: Buffer) : Promise<any> {
     const formData = new FormData()
     formData.append('file', buffer, fileName)
-    await axios.put(`http://localhost:3000/api/objects/v1/${area}/${id}`, formData, {
+    await axios.put(`${process.env.SERVER_URL || 'http://localhost:3000'}/api/objects/v1/${area}/${id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       },
@@ -26,7 +26,7 @@ describe('Postman collections', () => {
   }
 
   async function deleteFile (area: string, id: string) : Promise<any> {
-    await axios.delete(`http://localhost:3000/api/objects/v1/${area}/${id}`, {
+    await axios.delete(`${process.env.SERVER_URL || 'http://localhost:3000'}/api/objects/v1/${area}/${id}`, {
       auth: {
         username: 'admin',
         password: 'admin'

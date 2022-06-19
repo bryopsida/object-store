@@ -9,6 +9,7 @@ services:
     environment:
       OBJ_STORE_SKIP_APP_LAUNCH: "true"
       OBJ_STORE_PM_ENV: "docker"
+      SERVER_URL: "http://object-store:8080"
     depends_on:
     - object-store
     build:
