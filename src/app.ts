@@ -55,12 +55,10 @@ export default class App {
     this._server.log.info('Registering services')
     this._server.register(storageAreaService, {
       areas: config.get('storage.areas')
-    }).after(() => {
-      this._server.register(objectStorageService)
-    }).after(() => {
-      this._server.register(userService, {
-        userStorePath: config.get<string>('auth.userStorePath')
-      })
+    })
+    this._server.register(objectStorageService)
+    this._server.register(userService, {
+      userStorePath: config.get<string>('auth.userStorePath')
     })
   }
 

@@ -18,12 +18,14 @@ export default (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
   } else {
     fastify.log.info('Using embedded http basic authentication')
     fastify.register(require('@fastify/basic-auth'), {
-      validate: async (username: string, password: string, req: FastifyRequest, reply: FastifyReply, done: Function) => {
-        if (await fastify.userService.validate(username, password)) {
-          done()
-        } else {
-          done(new Error('Invalid credentials'))
-        }
+      validate: (username: string, password: string, req: FastifyRequest, reply: FastifyReply, done: Function) => {
+        fastify.userService.validate(username, password).then((valid) => {
+          if (valid) {
+            done()
+          } else {
+            done(new Error('Invalid credentials'))
+          }
+        }).catch((e) => done(e))
       },
       authenticate: true
     })
