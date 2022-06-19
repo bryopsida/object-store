@@ -22,13 +22,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Test Container
-        run: |
-          docker-compose -f docker-compose.test.yml up \
-            --build \
-            --remove-orphans \
-            --renew-anon-volumes \
-            --force-recreate \
-            --exit-code-from sut
+        run: npm run test:container
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master
         with:

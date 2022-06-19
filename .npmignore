@@ -20,3 +20,4 @@ nodemon.json
 PULL_REQUEST_TEMPLATE.md
 sonar-project.properties
 sut.Dockerfile
+.dockerignore
