@@ -6,6 +6,7 @@
   "scripts": {
     "test": "NODE_CONFIG_DIR=$PWD/src/config/ jest --coverage --testPathPattern='tests/.*\\.spec\\.ts'",
     "build": "node_modules/typescript/bin/tsc --project .",
+    "prepare": "npm run build",
     "start": "NODE_CONFIG_DIR=./dist/config node dist/app.js",
     "start:dev": "LOGGING_PRETTY_PRINT=true NODE_CONFIG_DIR=./src/config NODE_ENV=dev nodemon",
     "lint": "eslint --ext .ts src/",
