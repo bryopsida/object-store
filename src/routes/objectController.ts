@@ -105,11 +105,24 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     Params: IAreaRequest
   }>('/:area', {
     schema: {
+      description: 'Fetch a paginated list of objects stored in an area',
+      params: {
+        area: {
+          type: 'string',
+          description: 'Area to fetch the list of objects from'
+        }
+      },
       querystring: {
         type: 'object',
         properties: {
-          count: { type: 'number' },
-          offset: { type: 'number' }
+          count: {
+            type: 'number',
+            description: 'The maximum number of objects to fetch'
+          },
+          offset: {
+            type: 'number',
+            description: 'The offset to start fetching objects from within the area'
+          }
         }
       }
     }
@@ -136,7 +149,21 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
   fastify.get<{
     Params: IAreaAndObjectRequest
     Reply: ErrorResponse | Stream
-  }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+  }>('/:area/:id', {
+    schema: {
+      description: 'Download an object from an area',
+      params: {
+        area: {
+          type: 'string',
+          description: 'The area that holds the object you want to download'
+        },
+        id: {
+          type: 'string',
+          description: 'The id of the object you want to download'
+        }
+      }
+    }
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
     if (!await fastify.objectStorageService.doesObjectExist(params.area, params.id)) {
       return reply.code(404).send({
@@ -157,7 +184,21 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
   fastify.put<{
     Params: IAreaAndObjectRequest,
     Reply: ErrorResponse | IObjectMetaData
-  }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+  }>('/:area/:id', {
+    schema: {
+      description: 'Upload an object to an area',
+      params: {
+        area: {
+          type: 'string',
+          description: 'The area you wish to upload the object to'
+        },
+        id: {
+          type: 'string',
+          description: 'The unique identifier of the object you wish to upload'
+        }
+      }
+    }
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
     const file = await request.file()
     await fastify.objectStorageService.putObject(params.area, params.id, {
@@ -176,7 +217,21 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
   // delete object
   fastify.delete<{
     Params: IAreaAndObjectRequest
-  }>('/:area/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+  }>('/:area/:id', {
+    schema: {
+      description: 'Delete a object from an area',
+      params: {
+        area: {
+          type: 'string',
+          description: 'The area holding the object you wish to delete'
+        },
+        id: {
+          type: 'string',
+          description: 'The id of the object you wish to delete'
+        }
+      }
+    }
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
     const params : IAreaAndObjectRequest = request.params as IAreaAndObjectRequest
     if (!await fastify.objectStorageService.doesObjectExist(params.area, params.id)) {
       return reply.code(404).send({
