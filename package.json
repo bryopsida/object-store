@@ -29,6 +29,7 @@
     "@fastify/helmet": "^9.1.0",
     "@fastify/multipart": "^7.1.0",
     "@fastify/oauth2": "^5.0.0",
+    "@fastify/swagger": "^7.4.0",
     "argon2": "^0.28.5",
     "check-disk-space": "^3.3.0",
     "config": "^3.3.7",

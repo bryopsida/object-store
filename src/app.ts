@@ -7,6 +7,7 @@ import config from 'config'
 import storageAreaService from './services/storageAreaService'
 import objectStorageService from './services/objectStorageService'
 import userService from './services/userService'
+import fastifySwagger from '@fastify/swagger'
 
 export interface AppOptions {
   serverOptions: FastifyServerOptions;
@@ -41,6 +42,30 @@ export default class App {
   private configureMiddleware () {
     this._server.log.info('Registering middleware')
     this._server.register(multipart)
+    this._server.register(fastifySwagger, {
+      routePrefix: '/documentation',
+      swagger: {
+        info: {
+          title: 'Object Storage',
+          description: 'Object Storage Rest API Documentation',
+          version: '0.1.0'
+        },
+        schemes: ['http'],
+        consumes: ['application/json'],
+        produces: ['application/json']
+      },
+      uiConfig: {
+        docExpansion: 'full',
+        deepLinking: false
+      },
+      uiHooks: {
+        onRequest: function (request, reply, next) { next() },
+        preHandler: function (request, reply, next) { next() }
+      },
+      staticCSP: true,
+      transformStaticCSP: (header) => header,
+      exposeRoute: true
+    })
   }
 
   /**
@@ -85,6 +110,8 @@ export default class App {
     })
     this._isRunning = true
     this._server.log.info('Listening for connections')
+    await this._server.ready()
+    await this._server.swagger()
   }
 
   public async stop (): Promise<void> {
