@@ -1,4 +1,4 @@
-FROM node:18.6.0-alpine as build-base
+FROM node:18.12.1-alpine as build-base
 # inform noderd-kafka we want to link against the system librdkafka already installed to save build time
 ENV BUILD_LIBRDKAFKA=0
 RUN apk add --update --no-cache \
@@ -22,7 +22,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 
-FROM node:18.6.0-alpine
+FROM node:18.12.1-alpine
 RUN apk add --update --no-cache dumb-init curl
 ENV NODE_ENV production
 USER node
