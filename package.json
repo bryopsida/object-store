@@ -25,7 +25,7 @@
   "homepage": "https://github.com/bryopsida/object-store#readme",
   "dependencies": {
     "@fastify/auth": "^4.0.0",
-    "@fastify/basic-auth": "^4.0.0",
+    "@fastify/basic-auth": "^5.0.0",
     "@fastify/helmet": "^9.1.0",
     "@fastify/multipart": "^7.1.0",
     "@fastify/oauth2": "^5.0.0",
