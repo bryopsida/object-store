@@ -35,7 +35,7 @@
     "config": "^3.3.7",
     "fastify": "^4.0.1",
     "fastify-plugin": "^4.0.0",
-    "pino": "^8.0.0"
+    "pino": "^8.7.0"
   },
   "devDependencies": {
     "@types/config": "^0.0.41",
