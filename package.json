@@ -53,7 +53,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "form-data": "^4.0.0",
     "jest": "^29.0.0",
-    "moq.ts": "^9.0.0",
+    "moq.ts": "^10.0.0",
     "newman": "^5.3.2",
     "nodemon": "^2.0.16",
     "ts-jest": "^29.0.0",
