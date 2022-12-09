@@ -1,5 +1,5 @@
 {
-  "name": "@bryopsida/object-store",
+  "name": "@curium-rocks/object-store",
   "version": "0.1.0",
   "description": "Rest API that provides object store for saving files to file system",
   "main": "dist/app.js",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bryopsida/object-store.git"
+    "url": "git+https://github.com/curium-rocks/object-store.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bryopsida/object-store/issues"
+    "url": "https://github.com/curium-rocks/object-store/issues"
   },
-  "homepage": "https://github.com/bryopsida/object-store#readme",
+  "homepage": "https://github.com/curium-rocks/object-store#readme",
   "dependencies": {
     "@fastify/auth": "^4.0.0",
     "@fastify/basic-auth": "^5.0.0",
