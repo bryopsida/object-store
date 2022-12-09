@@ -1,7 +1,7 @@
 # Object-Store
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_object-store&metric=coverage)](https://sonarcloud.io/summary/new_code?id=bryopsida_object-store) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_object-store&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=bryopsida_object-store) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_object-store&metric=bugs)](https://sonarcloud.io/summary/new_code?id=bryopsida_object-store) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_object-store&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=bryopsida_object-store)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_object-store&metric=coverage)](https://sonarcloud.io/summary/new_code?id=curium-rocks_object-store) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_object-store&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=curium-rocks_object-store) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_object-store&metric=bugs)](https://sonarcloud.io/summary/new_code?id=curium-rocks_object-store) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_object-store&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=curium-rocks_object-store)
 
-This is a simple service that stores objects on the local filesystem. Must be used on combination with [Object-Store-Router](https://github.com/bryopsida/object-store-router) for sharding across multiple machines, and [Object-Store-Sync](https://github.com/bryopsida/object-store-sync) to automatically push files as modified on a file system to the store.
+This is a simple service that stores objects on the local filesystem. Must be used on combination with [Object-Store-Router](https://github.com/curium-rocks/object-store-router) for sharding across multiple machines, and [Object-Store-Sync](https://github.com/curium-rocks/object-store-sync) to automatically push files as modified on a file system to the store.
 
 ## How to get started
 You can run this application either directly with node or using a container. The default storage area uses the temp folder for your operating system, you should customises this to an area more appropriate for your system.
@@ -17,4 +17,4 @@ TODO
 #### Storage Areas
 TODO
 ## Work in progress
-This is currently a work in progress, for more information on what's done and what's coming up checkout the [project](https://github.com/users/bryopsida/projects/2/views/2) 
+This is currently a work in progress, for more information on what's done and what's coming up checkout the [project](https://github.com/users/curium-rocks/projects/2/views/2) 
