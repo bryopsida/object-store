@@ -9,4 +9,4 @@ jobs:
     name: "Validate"
     uses: curium-rocks/flows/.github/workflows/node-ts.yml@main
     secrets:
-      SONARQUBE_KEY: "{{ secrets.SONARQUBE_KEY }}"
+      SONARQUBE_KEY: "{{ secrets.SONAR_TOKEN }}"
