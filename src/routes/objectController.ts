@@ -203,12 +203,12 @@ export default function ObjectApiControllerPlugin (fastify : FastifyInstance, op
     const file = await request.file()
     await fastify.objectStorageService.putObject(params.area, params.id, {
       metaData: {
-        fileName: file.filename,
-        mimeType: file.mimetype,
+        fileName: file?.filename,
+        mimeType: file?.mimetype,
         lastModified: new Date(),
         id: params.id
       },
-      stream: file.file
+      stream: file?.file
     } as IObject)
     const metaData: IObjectMetaDTO = ObjectMetaDTO.fromObjectMetaData(await fastify.objectStorageService.getObjectMetaData(params.area, params.id))
     reply.code(200).send(metaData)
