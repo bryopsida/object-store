@@ -8,6 +8,7 @@ import storageAreaService from './services/storageAreaService'
 import objectStorageService from './services/objectStorageService'
 import userService from './services/userService'
 import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUI from '@fastify/swagger-ui'
 
 export interface AppOptions {
   serverOptions: FastifyServerOptions;
@@ -43,7 +44,6 @@ export default class App {
     this._server.log.info('Registering middleware')
     this._server.register(multipart)
     this._server.register(fastifySwagger, {
-      routePrefix: '/documentation',
       swagger: {
         info: {
           title: 'Object Storage',
@@ -53,18 +53,22 @@ export default class App {
         schemes: ['http'],
         consumes: ['application/json'],
         produces: ['application/json']
-      },
+      }
+    })
+    this._server.register(fastifySwaggerUI, {
+      routePrefix: '/documentation',
       uiConfig: {
         docExpansion: 'full',
         deepLinking: false
       },
       uiHooks: {
-        onRequest: function (request, reply, next) { next() },
-        preHandler: function (request, reply, next) { next() }
+        onRequest: function (request: any, reply: any, next: () => void) { next() },
+        preHandler: function (request: any, reply: any, next: () => void) { next() }
       },
       staticCSP: true,
-      transformStaticCSP: (header) => header,
-      exposeRoute: true
+      transformStaticCSP: (header: any) => header,
+      transformSpecification: (swaggerObject: any, request: any, reply: any) => { return swaggerObject },
+      transformSpecificationClone: true
     })
   }
 
