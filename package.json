@@ -11,7 +11,7 @@
     "prepublishOnly": "npm run build",
     "start": "NODE_CONFIG_DIR=./dist/config node dist/app.js",
     "start:dev": "LOGGING_PRETTY_PRINT=true NODE_CONFIG_DIR=./src/config NODE_ENV=dev nodemon",
-    "lint": "eslint --ext .ts src/ test/ && prettier --check .",
+    "lint": "eslint --ext .ts src/ tests/ && prettier --check .",
     "lint:fix": "eslint --ext .ts src/ tests/ --fix && prettier --write ."
   },
   "repository": {
