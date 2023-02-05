@@ -11,9 +11,9 @@ import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
 
 export interface AppOptions {
-  serverOptions: FastifyServerOptions;
-  port: number;
-  host: string;
+  serverOptions: FastifyServerOptions
+  port: number
+  host: string
 }
 
 export default class App {
@@ -22,12 +22,14 @@ export default class App {
   private readonly _host: string
   private _isRunning: boolean
 
-  constructor (opts?: AppOptions) {
+  constructor(opts?: AppOptions) {
     this._port = opts?.port || 3000
     this._host = opts?.host || 'localhost'
-    this._server = fastify(opts?.serverOptions || {
-      logger: true
-    })
+    this._server = fastify(
+      opts?.serverOptions || {
+        logger: true,
+      }
+    )
     this.configureSecurityPolicy()
     this.configureAuth()
     this.configureMiddleware()
@@ -40,7 +42,7 @@ export default class App {
   /**
    * Register micsallaneous middleware here
    */
-  private configureMiddleware () {
+  private configureMiddleware() {
     this._server.log.info('Registering middleware')
     this._server.register(multipart)
     this._server.register(fastifySwagger, {
@@ -48,69 +50,81 @@ export default class App {
         info: {
           title: 'Object Storage',
           description: 'Object Storage Rest API Documentation',
-          version: '0.1.0'
+          version: '0.1.0',
         },
         schemes: ['http'],
         consumes: ['application/json'],
-        produces: ['application/json']
-      }
+        produces: ['application/json'],
+      },
     })
     this._server.register(fastifySwaggerUI, {
       routePrefix: '/documentation',
       uiConfig: {
         docExpansion: 'full',
-        deepLinking: false
+        deepLinking: false,
       },
       uiHooks: {
-        onRequest: function (request: any, reply: any, next: () => void) { next() },
-        preHandler: function (request: any, reply: any, next: () => void) { next() }
+        onRequest: function (request: any, reply: any, next: () => void) {
+          next()
+        },
+        preHandler: function (request: any, reply: any, next: () => void) {
+          next()
+        },
       },
       staticCSP: true,
       transformStaticCSP: (header: any) => header,
-      transformSpecification: (swaggerObject: any, request: any, reply: any) => { return swaggerObject },
-      transformSpecificationClone: true
+      transformSpecification: (
+        swaggerObject: any,
+        request: any,
+        reply: any
+      ) => {
+        return swaggerObject
+      },
+      transformSpecificationClone: true,
     })
   }
 
   /**
    * Configure the security policy headers for the server
    */
-  private configureSecurityPolicy () {
+  private configureSecurityPolicy() {
     this._server.log.info('Registering security policy')
     this._server.register(helmet)
   }
 
-  private configureServices () {
+  private configureServices() {
     this._server.log.info('Registering services')
     this._server.register(storageAreaService, {
-      areas: config.get('storage.areas')
+      areas: config.get('storage.areas'),
     })
     this._server.register(objectStorageService)
     this._server.register(userService, {
-      userStorePath: config.get<string>('auth.userStorePath')
+      userStorePath: config.get<string>('auth.userStorePath'),
     })
   }
 
   /**
    * Adds the authentication and authorization polices to the server
    */
-  private configureAuth () {
-    this._server.log.info('Registering authentication and authorization policies')
+  private configureAuth() {
+    this._server.log.info(
+      'Registering authentication and authorization policies'
+    )
     authPlugin(this._server, {})
   }
 
   /**
    * Adds the route configurations to the server
    */
-  private configureRoutes () {
+  private configureRoutes() {
     this._server.log.info('Registering routes')
     routes.configureRoutes(this._server)
   }
 
-  public async start (): Promise<void> {
+  public async start(): Promise<void> {
     await this._server.listen({
       port: this._port,
-      host: this._host
+      host: this._host,
     })
     this._isRunning = true
     this._server.log.info('Listening for connections')
@@ -118,14 +132,14 @@ export default class App {
     await this._server.swagger()
   }
 
-  public async stop (): Promise<void> {
+  public async stop(): Promise<void> {
     this._server.log.info('Stopping listening for connections')
     await this._server.close()
     this._server.log.info('No longer listening for connections')
     this._isRunning = false
   }
 
-  public get isRunning (): boolean {
+  public get isRunning(): boolean {
     return this._isRunning
   }
 }
@@ -138,10 +152,10 @@ export default class App {
 if (require.main === module) {
   const app = new App({
     serverOptions: {
-      logger: true
+      logger: true,
     },
     port: config.get<number>('fastify.port') || 3000,
-    host: config.get<string>('fastify.host') || 'localhost'
+    host: config.get<string>('fastify.host') || 'localhost',
   })
 
   process.on('SIGINT', async () => {

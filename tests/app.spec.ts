@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 import App, { AppOptions } from '../src/app'
 
-function buildServerOptions (port: number) : AppOptions {
+function buildServerOptions(port: number): AppOptions {
   return {
     serverOptions: {
-      logger: false
+      logger: false,
     },
     port,
-    host: 'localhost'
+    host: 'localhost',
   }
 }
 

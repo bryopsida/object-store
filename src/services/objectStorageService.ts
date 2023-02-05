@@ -25,7 +25,11 @@ export interface IObjectStorageService {
   getObjectMetaData(area: string, id: string): Promise<IObjectMetaData>
   putObject(area: string, id: string, object: IObject): Promise<void>
   deleteObject(area: string, id: string): Promise<void>
-  listObjects(area: string, offset: number, count: number): Promise<IObjectMetaData[]>
+  listObjects(
+    area: string,
+    offset: number,
+    count: number
+  ): Promise<IObjectMetaData[]>
 }
 
 // markup the fastify instance so when the above interface is imported it shows
@@ -40,59 +44,70 @@ declare module 'fastify' {
 export class ObjectStorageService implements IObjectStorageService {
   private readonly _storageAreaService: IStorageAreaService
 
-  constructor (storageAreaService: IStorageAreaService, opts: Record<string, any>) {
+  constructor(
+    storageAreaService: IStorageAreaService,
+    opts: Record<string, any>
+  ) {
     this._storageAreaService = storageAreaService
   }
 
-  private async getInternalFileName (id: string) : Promise<string> {
+  private async getInternalFileName(id: string): Promise<string> {
     const normalized = id.toLowerCase()
     return crypto.createHash('sha256').update(normalized).digest('hex')
   }
 
-  private async getFilePath (area: string, id: string): Promise<string> {
+  private async getFilePath(area: string, id: string): Promise<string> {
     const storageAreaMetaData = await this._storageAreaService.getArea(area)
     if (!storageAreaMetaData) {
       throw new Error('Area does not exist')
     }
-    return path.join(storageAreaMetaData.path, await this.getInternalFileName(id))
+    return path.join(
+      storageAreaMetaData.path,
+      await this.getInternalFileName(id)
+    )
   }
 
-  private getMetaFilePath (filePath: string) : string {
+  private getMetaFilePath(filePath: string): string {
     return `${filePath}.meta.json`
   }
 
-  private parseMetaData (metaData: string): IObjectMetaData {
+  private parseMetaData(metaData: string): IObjectMetaData {
     // TODO: add validation here
     return JSON.parse(metaData)
   }
 
-  async getObjectMetaData (area: string, id: string): Promise<IObjectMetaData> {
+  async getObjectMetaData(area: string, id: string): Promise<IObjectMetaData> {
     const filePath = await this.getFilePath(area, id)
     const metaPath = this.getMetaFilePath(filePath)
     const metaData = await fs.readFile(metaPath, 'utf8')
     return this.parseMetaData(metaData)
   }
 
-  async doesObjectExist (area: string, id: string): Promise<boolean> {
+  async doesObjectExist(area: string, id: string): Promise<boolean> {
     const filePath = await this.getFilePath(area, id)
-    return fs.access(filePath).then(() => true).catch(() => false)
+    return fs
+      .access(filePath)
+      .then(() => true)
+      .catch(() => false)
   }
 
-  async getObject (area: string, id: string): Promise<IObject> {
+  async getObject(area: string, id: string): Promise<IObject> {
     const fileName = await this.getFilePath(area, id)
 
     // get a stream for the file itself
     const stream = createReadStream(fileName)
 
     // get the metadata
-    const metaData = this.parseMetaData(await fs.readFile(this.getMetaFilePath(fileName), 'utf8'))
+    const metaData = this.parseMetaData(
+      await fs.readFile(this.getMetaFilePath(fileName), 'utf8')
+    )
     return {
       metaData,
-      stream
+      stream,
     }
   }
 
-  async putObject (area: string, id: string, object: IObject): Promise<void> {
+  async putObject(area: string, id: string, object: IObject): Promise<void> {
     const filePath = await this.getFilePath(area, id)
     const metaFilePath = this.getMetaFilePath(filePath)
     const metaData = {
@@ -100,21 +115,21 @@ export class ObjectStorageService implements IObjectStorageService {
       fileName: object.metaData.fileName,
       mimeType: object.metaData.mimeType,
       size: object.metaData.size,
-      lastModified: object.metaData.lastModified
+      lastModified: object.metaData.lastModified,
     }
     await fs.writeFile(filePath, object.stream, {
-      flag: 'w'
+      flag: 'w',
     })
     // get actual file size
     const fileStats = await fs.stat(filePath)
     metaData.size = fileStats.size
     await fs.writeFile(metaFilePath, JSON.stringify(metaData), {
       encoding: 'utf8',
-      flag: 'w'
+      flag: 'w',
     })
   }
 
-  async deleteObject (area: string, id: string): Promise<void> {
+  async deleteObject(area: string, id: string): Promise<void> {
     const filePath = await this.getFilePath(area, id)
     const metaFilePath = this.getMetaFilePath(filePath)
     await fs.unlink(filePath)
@@ -122,21 +137,39 @@ export class ObjectStorageService implements IObjectStorageService {
   }
 
   // TODO: look at opendir to see if we can skip around the file system more effeciently
-  async listObjects (area: string, offset: number, count: number): Promise<IObjectMetaData[]> {
+  async listObjects(
+    area: string,
+    offset: number,
+    count: number
+  ): Promise<IObjectMetaData[]> {
     const areaPath = await this._storageAreaService.getArea(area)
     if (!areaPath) {
       throw new Error('Area does not exist')
     }
     const files = await fs.readdir(await areaPath.path)
-    const metaFiles = files.filter(file => file.endsWith('.meta.json'))
+    const metaFiles = files.filter((file) => file.endsWith('.meta.json'))
     const subsetFiles = metaFiles.splice(offset, count)
-    return (await Promise.all(subsetFiles.map(async (file) => fs.readFile(path.join(areaPath.path, file), 'utf8')))).map(this.parseMetaData)
+    return (
+      await Promise.all(
+        subsetFiles.map(async (file) =>
+          fs.readFile(path.join(areaPath.path, file), 'utf8')
+        )
+      )
+    ).map(this.parseMetaData)
   }
 }
 /**
  * Use fastify plugin to make these services available to fastify instance, can refactor in the future to scope to specific plugin controller scope
  */
-export default fastifyPlugin(function ObjectStorageServicePlugin (fastify: FastifyInstance, opts: FastifyPluginOptions, done: Function) {
-  fastify.decorate('objectStorageService', new ObjectStorageService(fastify.storageAreaService, opts))
+export default fastifyPlugin(function ObjectStorageServicePlugin(
+  fastify: FastifyInstance,
+  opts: FastifyPluginOptions,
+  done: Function
+) {
+  fastify.decorate(
+    'objectStorageService',
+    new ObjectStorageService(fastify.storageAreaService, opts)
+  )
   done()
-}, '4.x')
+},
+'4.x')

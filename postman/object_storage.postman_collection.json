@@ -1,704 +1,620 @@
 {
-	"info": {
-		"_postman_id": "e442207e-a624-4541-9bad-72c85c3f608f",
-		"name": "Object Storage",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "227389"
-	},
-	"item": [
-		{
-			"name": "List Objects",
-			"item": [
-				{
-					"name": "Requires Authentication",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 401\", () => {",
-									"  pm.response.to.have.status(401)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/test/",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"test",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can Get A List Of Objects",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200)",
-									"});",
-									"pm.test(\"Result values should match expected result\", () => {",
-									"    const result = pm.response.json()",
-									"    pm.expect(result.offset).to.be.eq(0)",
-									"    pm.expect(result.total).to.be.eq(4)",
-									"    pm.expect(result.count).to.be.eq(4)",
-									"    pm.expect(result.objects.length).to.be.eq(4)",
-									"})"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/default?offset=0&count=10",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"default"
-							],
-							"query": [
-								{
-									"key": "offset",
-									"value": "0"
-								},
-								{
-									"key": "count",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Returns 404 on invalid object",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 404\", () => {",
-									"  pm.response.to.have.status(404)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/invalid?offset=0&limit=10",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"invalid"
-							],
-							"query": [
-								{
-									"key": "offset",
-									"value": "0"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Download Object",
-			"item": [
-				{
-					"name": "Requires Authentication",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 401\", () => {",
-									"  pm.response.to.have.status(401)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/area/object",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"area",
-								"object"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can Download Object",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200)",
-									"});",
-									"",
-									"pm.test(\"Response should have expected property\", () => {",
-									"  const expectedObject = {",
-									"    \"test\": \"test\"",
-									"  };",
-									"  pm.expect(pm.response.json()).to.deep.include(expectedObject);",
-									"})"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/default/postman_test_download",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"default",
-								"postman_test_download"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Returns 404 on invalid object",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 404\", () => {",
-									"  pm.response.to.have.status(404)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/default/postman_test_download_bad_object",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"default",
-								"postman_test_download_bad_object"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Upload Object",
-			"item": [
-				{
-					"name": "Requires Authentication",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 401\", () => {",
-									"  pm.response.to.have.status(401)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/test/test",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"test",
-								"test"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can Upload Object",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "./test-file-upload.json"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/default/postman_test_upload",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"default",
-								"postman_test_upload"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Returns 404 on invalid area",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 404\", () => {",
-									"  pm.response.to.have.status(404)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "./test-file-upload.json"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/invalid/postman_test_upload",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"invalid",
-								"postman_test_upload"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Delete Object",
-			"item": [
-				{
-					"name": "Requires Authentication",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 401\", () => {",
-									"  pm.response.to.have.status(401)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/test/test",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"test",
-								"test"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can Delete Object",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 200\", () => {",
-									"  pm.response.to.have.status(200)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/default/postman_test_delete",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"default",
-								"postman_test_delete"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Returns 404 on invalid object",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
-									"  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
-									"})",
-									"",
-									"pm.test(\"Status code is 404\", () => {",
-									"  pm.response.to.have.status(404)",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{server_url}}/api/objects/v1/default/postman_test_delete_bad_object",
-							"host": [
-								"{{server_url}}"
-							],
-							"path": [
-								"api",
-								"objects",
-								"v1",
-								"default",
-								"postman_test_delete_bad_object"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "e442207e-a624-4541-9bad-72c85c3f608f",
+    "name": "Object Storage",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "227389"
+  },
+  "item": [
+    {
+      "name": "List Objects",
+      "item": [
+        {
+          "name": "Requires Authentication",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 401\", () => {",
+                  "  pm.response.to.have.status(401)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/test/",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "test", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Can Get A List Of Objects",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 200\", () => {",
+                  "  pm.response.to.have.status(200)",
+                  "});",
+                  "pm.test(\"Result values should match expected result\", () => {",
+                  "    const result = pm.response.json()",
+                  "    pm.expect(result.offset).to.be.eq(0)",
+                  "    pm.expect(result.total).to.be.eq(4)",
+                  "    pm.expect(result.count).to.be.eq(4)",
+                  "    pm.expect(result.objects.length).to.be.eq(4)",
+                  "})"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/default?offset=0&count=10",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "default"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "count",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Returns 404 on invalid object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 404\", () => {",
+                  "  pm.response.to.have.status(404)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/invalid?offset=0&limit=10",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "invalid"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Download Object",
+      "item": [
+        {
+          "name": "Requires Authentication",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 401\", () => {",
+                  "  pm.response.to.have.status(401)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/area/object",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "area", "object"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Can Download Object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 200\", () => {",
+                  "  pm.response.to.have.status(200)",
+                  "});",
+                  "",
+                  "pm.test(\"Response should have expected property\", () => {",
+                  "  const expectedObject = {",
+                  "    \"test\": \"test\"",
+                  "  };",
+                  "  pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+                  "})"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/default/postman_test_download",
+              "host": ["{{server_url}}"],
+              "path": [
+                "api",
+                "objects",
+                "v1",
+                "default",
+                "postman_test_download"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Returns 404 on invalid object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 404\", () => {",
+                  "  pm.response.to.have.status(404)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/default/postman_test_download_bad_object",
+              "host": ["{{server_url}}"],
+              "path": [
+                "api",
+                "objects",
+                "v1",
+                "default",
+                "postman_test_download_bad_object"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Upload Object",
+      "item": [
+        {
+          "name": "Requires Authentication",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 401\", () => {",
+                  "  pm.response.to.have.status(401)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/test/test",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "test", "test"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Can Upload Object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 200\", () => {",
+                  "  pm.response.to.have.status(200)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "./test-file-upload.json"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/default/postman_test_upload",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "default", "postman_test_upload"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Returns 404 on invalid area",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 404\", () => {",
+                  "  pm.response.to.have.status(404)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "./test-file-upload.json"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/invalid/postman_test_upload",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "invalid", "postman_test_upload"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delete Object",
+      "item": [
+        {
+          "name": "Requires Authentication",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 401\", () => {",
+                  "  pm.response.to.have.status(401)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/test/test",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "test", "test"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Can Delete Object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 200\", () => {",
+                  "  pm.response.to.have.status(200)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/default/postman_test_delete",
+              "host": ["{{server_url}}"],
+              "path": ["api", "objects", "v1", "default", "postman_test_delete"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Returns 404 on invalid object",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Response time is below ${pm.environment.get('latency_threshold')}`, () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('latency_threshold')));",
+                  "})",
+                  "",
+                  "pm.test(\"Status code is 404\", () => {",
+                  "  pm.response.to.have.status(404)",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/api/objects/v1/default/postman_test_delete_bad_object",
+              "host": ["{{server_url}}"],
+              "path": [
+                "api",
+                "objects",
+                "v1",
+                "default",
+                "postman_test_delete_bad_object"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }
