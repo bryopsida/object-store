@@ -4,7 +4,14 @@
   "testTimeout": 240000,
   "verbose": true,
   "moduleNameMapper": {
-    "(.+)\\.js": "$1"
+    "app.js": "app",
+    "./auth/authPlugin.js": "./auth/authPlugin",
+    "./routes/index.js": "./routes/index",
+    "./services/storageAreaService.js": "./services/storageAreaService",
+    "./services/objectStorageService.js": "./services/objectStorageService",
+    "./services/userService.js": "./services/userService",
+    "./objectController.js": "./objectController",
+    "./storageStatusController.js": "./storageStatusController"
   },
   "extensionsToTreatAsEsm": [".ts"],
   "transform": {

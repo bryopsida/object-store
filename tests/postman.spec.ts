@@ -6,6 +6,8 @@ import { Agent } from 'http'
 import axios from 'axios'
 import FormData from 'form-data'
 import path from 'path'
+import { describe, it, jest } from '@jest/globals'
+import { readFileSync } from 'fs'
 
 describe('Postman collections', () => {
   let app: App
@@ -128,10 +130,21 @@ describe('Postman collections', () => {
     it('Passess', (done) => {
       newman
         .run({
-          collection: require('../postman/object_storage.postman_collection.json'),
-          environment: require(`../postman/${
-            process.env.OBJ_STORE_PM_ENV || 'dev'
-          }.postman_environment.json`),
+          collection: JSON.parse(
+            readFileSync('./postman/object_storage.postman_collection.json', {
+              encoding: 'utf8',
+            })
+          ),
+          environment: JSON.parse(
+            readFileSync(
+              `./postman/${
+                process.env.OBJ_STORE_PM_ENV || 'dev'
+              }.postman_environment.json`,
+              {
+                encoding: 'utf8',
+              }
+            )
+          ),
           reporters: 'cli',
           timeout: 20000,
           timeoutRequest: 3000,
@@ -161,10 +174,21 @@ describe('Postman collections', () => {
     it('Passess', (done) => {
       newman
         .run({
-          collection: require('../postman/storage_status.postman_collection.json'),
-          environment: require(`../postman/${
-            process.env.OBJ_STORE_PM_ENV || 'dev'
-          }.postman_environment.json`),
+          collection: JSON.parse(
+            readFileSync('./postman/storage_status.postman_collection.json', {
+              encoding: 'utf8',
+            })
+          ),
+          environment: JSON.parse(
+            readFileSync(
+              `./postman/${
+                process.env.OBJ_STORE_PM_ENV || 'dev'
+              }.postman_environment.json`,
+              {
+                encoding: 'utf8',
+              }
+            )
+          ),
           reporters: 'cli',
           timeout: 20000,
           timeoutRequest: 3000,

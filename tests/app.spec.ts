@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import App, { AppOptions } from '../src/app'
+import { describe, it, expect } from '@jest/globals'
 
 function buildServerOptions(port: number): AppOptions {
   return {
