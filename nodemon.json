@@ -1,7 +1,7 @@
 {
   "watch": ["src"],
   "ext": "ts,json",
-  "exec": "node --inspect -r ts-node/register ./src/app.ts",
+  "exec": "NODE_ENV=dev node --experimental-specifier-resolution=node --inspect --loader ts-node/esm ./src/app.ts",
   "delay": 5,
   "signal": "SIGTERM",
   "inspect": "true"
