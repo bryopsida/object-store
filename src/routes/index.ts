@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify'
-import objectController from './objectController'
-import storageStatusController from './storageStatusController'
+import objectController from './objectController.js'
+import storageStatusController from './storageStatusController.js'
 
 export default class RouteRegistrator {
   static configureRoutes(fastify: FastifyInstance) {

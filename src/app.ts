@@ -1,14 +1,15 @@
 import { FastifyInstance, fastify, FastifyServerOptions } from 'fastify'
 import helmet from '@fastify/helmet'
 import multipart from '@fastify/multipart'
-import authPlugin from './auth/authPlugin'
-import routes from './routes'
+import authPlugin from './auth/authPlugin.js'
+import routes from './routes/index.js'
 import config from 'config'
-import storageAreaService from './services/storageAreaService'
-import objectStorageService from './services/objectStorageService'
-import userService from './services/userService'
+import storageAreaService from './services/storageAreaService.js'
+import objectStorageService from './services/objectStorageService.js'
+import userService from './services/userService.js'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
+import esMain from 'es-main'
 
 export interface AppOptions {
   serverOptions: FastifyServerOptions
@@ -149,7 +150,7 @@ export default class App {
  * if this becomes more complex it should be refactored and covered by tests
  */
 /* istanbul ignore next */
-if (require.main === module) {
+if (esMain(import.meta)) {
   const app = new App({
     serverOptions: {
       logger: true,

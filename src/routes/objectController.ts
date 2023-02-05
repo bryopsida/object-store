@@ -5,7 +5,7 @@ import {
   FastifyRequest,
 } from 'fastify'
 import { Stream } from 'stream'
-import { IObject, IObjectMetaData } from '../services/objectStorageService'
+import { IObject, IObjectMetaData } from '../services/objectStorageService.js'
 
 export interface IObjectSearchQuery {
   offset: number

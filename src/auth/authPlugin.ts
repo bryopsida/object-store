@@ -1,10 +1,12 @@
-import { FastifyOAuth2Options } from '@fastify/oauth2'
+import oauth2, { FastifyOAuth2Options } from '@fastify/oauth2'
 import {
   FastifyInstance,
   FastifyPluginOptions,
   FastifyRequest,
   FastifyReply,
 } from 'fastify'
+import auth from '@fastify/auth'
+import basic from '@fastify/basic-auth'
 
 export default (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
   if (opts.authType === 'oauth2') {
@@ -15,14 +17,14 @@ export default (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
         name: 'customOauth2',
       },
     }
-    fastify.register(require('@fastify/oauth2'), oauthOpts)
+    fastify.register(oauth2, oauthOpts)
     fastify.after(() => {
       fastify.log.info('Aliasing verifyCredentials to customOauth2')
       fastify.decorate('verifyCredentials', (fastify as any).customOauth2)
     })
   } else {
     fastify.log.info('Using embedded http basic authentication')
-    fastify.register(require('@fastify/basic-auth'), {
+    fastify.register(basic, {
       validate: (
         username: string,
         password: string,
@@ -48,5 +50,5 @@ export default (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
       fastify.decorate('verifyCredentials', (fastify as any).basicAuth)
     })
   }
-  fastify.register(require('@fastify/auth'))
+  fastify.register(auth)
 }

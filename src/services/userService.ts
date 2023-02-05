@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 import argon2 from 'argon2'
+import { readFileSync } from 'node:fs'
 
 export interface IUserService {
   validate(username: string, password: string): Promise<boolean>
@@ -21,7 +22,11 @@ class UserService implements IUserService {
   private readonly _users: Record<string, User>
 
   constructor(userStorePath: string) {
-    this._users = require(userStorePath)
+    this._users = JSON.parse(
+      readFileSync(userStorePath, {
+        encoding: 'utf8',
+      })
+    )
   }
 
   validate(username: string, password: string): Promise<boolean> {

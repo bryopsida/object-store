@@ -5,7 +5,7 @@ import crypto from 'crypto'
 import path from 'path'
 import fastifyPlugin from 'fastify-plugin'
 import { Stream } from 'stream'
-import { IStorageAreaService } from './storageAreaService'
+import { IStorageAreaService } from './storageAreaService.js'
 
 export interface IObjectMetaData {
   id: string

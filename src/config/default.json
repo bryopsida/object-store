@@ -1,6 +1,6 @@
 {
   "auth": {
-    "userStorePath": "../config/users.json"
+    "userStorePath": "config/users.json"
   },
   "fastify": {
     "logger": true,
