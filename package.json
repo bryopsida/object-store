@@ -19,7 +19,7 @@
     "test": "NODE_CONFIG_DIR=$PWD/src/config/ NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage --testPathPattern='tests/.*\\.spec\\.ts'",
     "test:container": "docker-compose -f docker-compose.test.yml up --build --remove-orphans --renew-anon-volumes --force-recreate --exit-code-from sut",
     "build": "node_modules/typescript/bin/tsc --project . && mkdir -p dist/config && cp src/config/*.json dist/config/",
-    "prepublishOnly": "npm run build",
+    "prepack": "npm run build",
     "start": "NODE_CONFIG_DIR=./dist/config node dist/app.js",
     "start:dev": "LOGGING_PRETTY_PRINT=true NODE_CONFIG_DIR=./src/config NODE_ENV=dev nodemon",
     "lint": "eslint --ext .ts src/ tests/ && prettier --check .",
