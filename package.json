@@ -1,6 +1,6 @@
 {
   "name": "@bryopsida/object-store",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Rest API that provides object store for saving files to file system",
   "main": "dist/app.js",
   "type": "module",
