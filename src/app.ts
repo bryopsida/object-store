@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { FastifyInstance, fastify, FastifyServerOptions } from 'fastify'
 import helmet from '@fastify/helmet'
 import multipart from '@fastify/multipart'
@@ -10,12 +11,16 @@ import userService from './services/userService.js'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
 import esMain from 'es-main'
+import { tmpdir } from 'os'
+import { dirname, join, resolve } from 'path'
+import { fileURLToPath } from 'url'
 
 export interface AppOptions {
   serverOptions: FastifyServerOptions
   port: number
   host: string
 }
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default class App {
   private readonly _server: FastifyInstance
@@ -96,11 +101,21 @@ export default class App {
   private configureServices() {
     this._server.log.info('Registering services')
     this._server.register(storageAreaService, {
-      areas: config.get('storage.areas'),
+      areas: config.has('storage.areas')
+        ? config.get('storage.areas')
+        : {
+            default: {
+              name: 'default',
+              path: join(tmpdir(), 'default'),
+              description: 'Default area',
+            },
+          },
     })
     this._server.register(objectStorageService)
     this._server.register(userService, {
-      userStorePath: config.get<string>('auth.userStorePath'),
+      userStorePath: config.has('auth.userStorePath')
+        ? config.get<string>('auth.userStorePath')
+        : resolve(__dirname, 'config/users.json'),
     })
   }
 
@@ -155,8 +170,12 @@ if (esMain(import.meta)) {
     serverOptions: {
       logger: true,
     },
-    port: config.get<number>('fastify.port') || 3000,
-    host: config.get<string>('fastify.host') || 'localhost',
+    port: config.has('fastify.port')
+      ? config.get<number>('fastify.port')
+      : 3000,
+    host: config.has('fastify.host')
+      ? config.get<string>('fastify.host')
+      : 'localhost',
   })
 
   process.on('SIGINT', async () => {
