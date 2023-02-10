@@ -6,7 +6,7 @@ This is a simple service that stores objects on the local filesystem. Must be us
 
 ## How to get started
 
-You can run this application either directly with node or using a container. The default storage area uses the temp folder for your operating system, you should customises this to an area more appropriate for your system.
+You can run this application either directly with node or using a container. The default storage area uses the temp folder for your operating system, you should customize this to an area more appropriate for your system.
 
 ### NPM
 
@@ -15,16 +15,6 @@ This application is compatible with node versions 16-18, you can install the app
 ### Docker
 
 A docker image is provided if you prefer to use a container. You can run the application using `docker run bryopsida/object-store:main -p 8080:8080`, the default credentials are `admin:admin` and you can find more information about the API at http://localhost:8080/documentation/.
-
-### Configuration
-
-#### User Accounts
-
-TODO
-
-#### Storage Areas
-
-TODO
 
 ## Work in progress
 
