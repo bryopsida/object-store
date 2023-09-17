@@ -15,11 +15,11 @@ export interface IAreaRequestParams {
 export default function StorageStatusApiControllerPlugin(
   fastify: FastifyInstance,
   opts: FastifyPluginOptions,
-  done: Function
+  done: Function,
 ) {
   fastify.addHook(
     'preHandler',
-    (fastify as any).auth([(fastify as any).verifyCredentials])
+    (fastify as any).auth([(fastify as any).verifyCredentials]),
   )
 
   // list areas
@@ -44,7 +44,7 @@ export default function StorageStatusApiControllerPlugin(
         await fastify.storageAreaService.getTotalAreaCount()
       const areas = await fastify.storageAreaService.listAreas(
         listQuery.offset,
-        listQuery.count
+        listQuery.count,
       )
       reply.send({
         total: totalAreaCount,
@@ -52,7 +52,7 @@ export default function StorageStatusApiControllerPlugin(
         count: areas.length,
         areas,
       })
-    }
+    },
   )
 
   // get metadata information for area
@@ -66,7 +66,7 @@ export default function StorageStatusApiControllerPlugin(
       })
     }
     reply.send(
-      await fastify.storageAreaService.getAreaMetaData(pathParams.area)
+      await fastify.storageAreaService.getAreaMetaData(pathParams.area),
     )
   })
   done()
