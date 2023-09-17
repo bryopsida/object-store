@@ -1,4 +1,4 @@
-FROM node:lts-alpine as build-base
+FROM node:lts-alpine AS build-base
 # inform noderd-kafka we want to link against the system librdkafka already installed to save build time
 ENV BUILD_LIBRDKAFKA=0
 RUN apk add --update --no-cache \

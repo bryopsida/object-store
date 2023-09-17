@@ -29,10 +29,10 @@ export default class App {
   private _isRunning: boolean
 
   constructor(opts?: AppOptions) {
-    this._port = opts?.port || 3000
-    this._host = opts?.host || 'localhost'
+    this._port = opts?.port ?? 3000
+    this._host = opts?.host ?? 'localhost'
     this._server = fastify(
-      opts?.serverOptions || {
+      opts?.serverOptions ?? {
         logger: true,
       }
     )

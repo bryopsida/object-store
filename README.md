@@ -10,7 +10,7 @@ You can run this application either directly with node or using a container. The
 
 ### NPM
 
-This application is compatible with node versions 16-18, you can install the application with `npm install -g @bryopsida/object-store`, and run it with `object-store`. The default credentials are `admin:admin` and you can find more information about the API at the swagger ui at http://localhost:3000/documentation.
+This application is compatible with node versions 16-20, you can install the application with `npm install -g @bryopsida/object-store`, and run it with `object-store`. The default credentials are `admin:admin` and you can find more information about the API at the swagger ui at http://localhost:3000/documentation.
 
 ### Docker
 
