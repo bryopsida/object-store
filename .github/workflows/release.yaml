@@ -11,8 +11,6 @@ jobs:
       contents: read
       actions: read
       security-events: write
-    with:
-      node_versions: '{"node-version": ["16.x","18.x"]}'
     secrets:
       SONARQUBE_KEY: ${{ secrets.SONARQUBE_KEY }}
   publish-to-npm:
