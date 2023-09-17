@@ -50,11 +50,11 @@ export class ObjectMetaDTO implements IObjectMetaDTO {
     this._fileName = objectMetaDTO.fileName
     this._lastModified = objectMetaDTO.lastModified
     this._mimeType = objectMetaDTO.mimeType
-    this._size = objectMetaDTO.size || -1
+    this._size = objectMetaDTO.size ?? -1
   }
 
   get id(): string {
-    return this.id
+    return this._id
   }
 
   get fileName(): string {
@@ -79,13 +79,14 @@ export class ObjectMetaDTO implements IObjectMetaDTO {
       fileName: this._fileName,
       mimeType: this._mimeType,
       size: this._size,
-      lastModified:
-        this._lastModified == null
-          ? null
-          : typeof this._lastModified === 'string'
-          ? this._lastModified
-          : this._lastModified.toISOString(),
+      lastModified: this.getLastModified()
     }
+  }
+
+  getLastModified(): string | undefined {
+    if(this._lastModified == null) return undefined
+    if(typeof this._lastModified === 'string') return this._lastModified
+    return this._lastModified.toISOString()
   }
 
   static fromObjectMetaData(objectMetaData: IObjectMetaData): IObjectMetaDTO {

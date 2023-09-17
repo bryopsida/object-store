@@ -146,7 +146,7 @@ export class ObjectStorageService implements IObjectStorageService {
     if (!areaPath) {
       throw new Error('Area does not exist')
     }
-    const files = await fs.readdir(await areaPath.path)
+    const files = await fs.readdir(areaPath.path)
     const metaFiles = files.filter((file) => file.endsWith('.meta.json'))
     const subsetFiles = metaFiles.splice(offset, count)
     return (
