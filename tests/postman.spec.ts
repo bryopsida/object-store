@@ -17,7 +17,7 @@ describe('Postman collections', () => {
     area: string,
     id: string,
     fileName: string,
-    buffer: Buffer
+    buffer: Buffer,
   ): Promise<any> {
     const formData = new FormData()
     formData.append('file', buffer, fileName)
@@ -34,7 +34,7 @@ describe('Postman collections', () => {
           username: 'admin',
           password: 'admin',
         },
-      }
+      },
     )
   }
 
@@ -48,7 +48,7 @@ describe('Postman collections', () => {
           username: 'admin',
           password: 'admin',
         },
-      }
+      },
     )
   }
 
@@ -80,28 +80,28 @@ describe('Postman collections', () => {
         'default',
         'postman_test_list_upload',
         'postman_test.json',
-        blob
+        blob,
       )
       // postman_test_download
       await uploadFile(
         'default',
         'postman_test_download',
         'postman_test.json',
-        blob
+        blob,
       )
       // postman_test_upload
       await uploadFile(
         'default',
         'postman_test_upload',
         'postman_test.json',
-        blob
+        blob,
       )
       // postman_test_delete
       await uploadFile(
         'default',
         'postman_test_delete',
         'postman_test.json',
-        blob
+        blob,
       )
     } catch (err) {
       console.error(`Error while creating test files ${err}`)
@@ -133,7 +133,7 @@ describe('Postman collections', () => {
           collection: JSON.parse(
             readFileSync('./postman/object_storage.postman_collection.json', {
               encoding: 'utf8',
-            })
+            }),
           ),
           environment: JSON.parse(
             readFileSync(
@@ -142,8 +142,8 @@ describe('Postman collections', () => {
               }.postman_environment.json`,
               {
                 encoding: 'utf8',
-              }
-            )
+              },
+            ),
           ),
           reporters: 'cli',
           timeout: 20000,
@@ -177,7 +177,7 @@ describe('Postman collections', () => {
           collection: JSON.parse(
             readFileSync('./postman/storage_status.postman_collection.json', {
               encoding: 'utf8',
-            })
+            }),
           ),
           environment: JSON.parse(
             readFileSync(
@@ -186,8 +186,8 @@ describe('Postman collections', () => {
               }.postman_environment.json`,
               {
                 encoding: 'utf8',
-              }
-            )
+              },
+            ),
           ),
           reporters: 'cli',
           timeout: 20000,

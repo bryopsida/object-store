@@ -30,7 +30,7 @@ export default (fastify: FastifyInstance, opts: FastifyPluginOptions) => {
         password: string,
         req: FastifyRequest,
         reply: FastifyReply,
-        done: Function
+        done: Function,
       ) => {
         fastify.userService
           .validate(username, password)

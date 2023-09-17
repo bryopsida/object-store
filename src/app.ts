@@ -34,7 +34,7 @@ export default class App {
     this._server = fastify(
       opts?.serverOptions ?? {
         logger: true,
-      }
+      },
     )
     this.configureSecurityPolicy()
     this.configureAuth()
@@ -82,7 +82,7 @@ export default class App {
       transformSpecification: (
         swaggerObject: any,
         request: any,
-        reply: any
+        reply: any,
       ) => {
         return swaggerObject
       },
@@ -124,7 +124,7 @@ export default class App {
    */
   private configureAuth() {
     this._server.log.info(
-      'Registering authentication and authorization policies'
+      'Registering authentication and authorization policies',
     )
     authPlugin(this._server, {})
   }

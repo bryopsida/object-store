@@ -28,7 +28,7 @@ export interface IObjectStorageService {
   listObjects(
     area: string,
     offset: number,
-    count: number
+    count: number,
   ): Promise<IObjectMetaData[]>
 }
 
@@ -46,7 +46,7 @@ export class ObjectStorageService implements IObjectStorageService {
 
   constructor(
     storageAreaService: IStorageAreaService,
-    opts: Record<string, any>
+    opts: Record<string, any>,
   ) {
     this._storageAreaService = storageAreaService
   }
@@ -63,7 +63,7 @@ export class ObjectStorageService implements IObjectStorageService {
     }
     return path.join(
       storageAreaMetaData.path,
-      await this.getInternalFileName(id)
+      await this.getInternalFileName(id),
     )
   }
 
@@ -99,7 +99,7 @@ export class ObjectStorageService implements IObjectStorageService {
 
     // get the metadata
     const metaData = this.parseMetaData(
-      await fs.readFile(this.getMetaFilePath(fileName), 'utf8')
+      await fs.readFile(this.getMetaFilePath(fileName), 'utf8'),
     )
     return {
       metaData,
@@ -140,7 +140,7 @@ export class ObjectStorageService implements IObjectStorageService {
   async listObjects(
     area: string,
     offset: number,
-    count: number
+    count: number,
   ): Promise<IObjectMetaData[]> {
     const areaPath = await this._storageAreaService.getArea(area)
     if (!areaPath) {
@@ -152,8 +152,8 @@ export class ObjectStorageService implements IObjectStorageService {
     return (
       await Promise.all(
         subsetFiles.map(async (file) =>
-          fs.readFile(path.join(areaPath.path, file), 'utf8')
-        )
+          fs.readFile(path.join(areaPath.path, file), 'utf8'),
+        ),
       )
     ).map(this.parseMetaData)
   }
@@ -164,12 +164,11 @@ export class ObjectStorageService implements IObjectStorageService {
 export default fastifyPlugin(function ObjectStorageServicePlugin(
   fastify: FastifyInstance,
   opts: FastifyPluginOptions,
-  done: Function
+  done: Function,
 ) {
   fastify.decorate(
     'objectStorageService',
-    new ObjectStorageService(fastify.storageAreaService, opts)
+    new ObjectStorageService(fastify.storageAreaService, opts),
   )
   done()
-},
-'4.x')
+}, '4.x')

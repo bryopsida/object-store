@@ -79,7 +79,7 @@ export class StorageAreaService implements IStorageAreaService {
       throw new Error(`Area ${area} does not exist`)
     }
     const areaObject: IStorageArea | undefined = this._areas.find(
-      (a) => a.name === area
+      (a) => a.name === area,
     )
     if (!areaObject) {
       throw new Error(`Unable to retrieve area ${area}`)
@@ -104,7 +104,7 @@ export class StorageAreaService implements IStorageAreaService {
   }
 
   private async getAreaObjectCount(
-    areaPath: string
+    areaPath: string,
   ): Promise<number | undefined> {
     // TODO: check performance on large folders, this builds a list of files in memory,
     // which is not ideal but will probably be fine for sub 25k files
@@ -137,14 +137,13 @@ declare module 'fastify' {
 export default fastifyPlugin(function StorageAreaServicePlugin(
   fastify: FastifyInstance,
   opts: FastifyPluginOptions,
-  done: Function
+  done: Function,
 ) {
   fastify.decorate(
     'storageAreaService',
     new StorageAreaService({
       areas: opts.areas,
-    })
+    }),
   )
   done()
-},
-'4.x')
+}, '4.x')

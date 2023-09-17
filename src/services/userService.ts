@@ -25,7 +25,7 @@ class UserService implements IUserService {
     this._users = JSON.parse(
       readFileSync(userStorePath, {
         encoding: 'utf8',
-      })
+      }),
     )
   }
 
@@ -43,9 +43,8 @@ class UserService implements IUserService {
 export default fastifyPlugin(function UserServicePlugin(
   fastify: FastifyInstance,
   opts: FastifyPluginOptions,
-  done: Function
+  done: Function,
 ) {
   fastify.decorate('userService', new UserService(opts.userStorePath))
   done()
-},
-'4.x')
+}, '4.x')

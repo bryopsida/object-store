@@ -79,13 +79,13 @@ export class ObjectMetaDTO implements IObjectMetaDTO {
       fileName: this._fileName,
       mimeType: this._mimeType,
       size: this._size,
-      lastModified: this.getLastModified()
+      lastModified: this.getLastModified(),
     }
   }
 
   getLastModified(): string | undefined {
-    if(this._lastModified == null) return undefined
-    if(typeof this._lastModified === 'string') return this._lastModified
+    if (this._lastModified == null) return undefined
+    if (typeof this._lastModified === 'string') return this._lastModified
     return this._lastModified.toISOString()
   }
 
@@ -97,17 +97,17 @@ export class ObjectMetaDTO implements IObjectMetaDTO {
 export default function ObjectApiControllerPlugin(
   fastify: FastifyInstance,
   opts: FastifyPluginOptions,
-  done: Function
+  done: Function,
 ) {
   fastify.addHook(
     'preHandler',
-    (fastify as any).auth([(fastify as any).verifyCredentials])
+    (fastify as any).auth([(fastify as any).verifyCredentials]),
   )
 
   fastify.addHook('preHandler', async (req, reply) => {
     if (
       !(await fastify.storageAreaService.doesAreaExist(
-        (req.params as any).area
+        (req.params as any).area,
       ))
     ) {
       reply.code(404).send({
@@ -155,7 +155,7 @@ export default function ObjectApiControllerPlugin(
       const params = request.params as IAreaRequest
       fastify.log.info(`Fetching object meta data from area ${params.area}`)
       const areaMetaData = await fastify.storageAreaService.getAreaMetaData(
-        params.area
+        params.area,
       )
       if (areaMetaData.totalObjectCount <= query.offset) {
         return reply.code(400).send({
@@ -165,7 +165,7 @@ export default function ObjectApiControllerPlugin(
       const listResult = await fastify.objectStorageService.listObjects(
         params.area,
         query.offset,
-        query.count
+        query.count,
       )
       reply.send({
         total: areaMetaData.totalObjectCount,
@@ -173,7 +173,7 @@ export default function ObjectApiControllerPlugin(
         count: listResult.length,
         objects: listResult.map(ObjectMetaDTO.fromObjectMetaData),
       } as IPaginatedObjectMetaDataResponse)
-    }
+    },
   )
 
   // get object
@@ -203,7 +203,7 @@ export default function ObjectApiControllerPlugin(
       if (
         !(await fastify.objectStorageService.doesObjectExist(
           params.area,
-          params.id
+          params.id,
         ))
       ) {
         return reply.code(404).send({
@@ -213,14 +213,14 @@ export default function ObjectApiControllerPlugin(
       fastify.log.info(`Fetching object ${params.id} for req ${request.id}`)
       const object = await fastify.objectStorageService.getObject(
         params.area,
-        params.id
+        params.id,
       )
       await reply
         .code(200)
         .type(object.metaData.mimeType)
         .header(
           'Content-Disposition',
-          `attachment; filename="${object.metaData.fileName}"`
+          `attachment; filename="${object.metaData.fileName}"`,
         )
         .header('Content-Length', object.metaData.size)
         .header(
@@ -229,10 +229,10 @@ export default function ObjectApiControllerPlugin(
             ? typeof object.metaData.lastModified === 'string'
               ? object.metaData.lastModified
               : object.metaData.lastModified.toUTCString()
-            : undefined
+            : undefined,
         )
         .send(object.stream)
-    }
+    },
   )
 
   // upload object
@@ -273,11 +273,11 @@ export default function ObjectApiControllerPlugin(
       const metaData: IObjectMetaDTO = ObjectMetaDTO.fromObjectMetaData(
         await fastify.objectStorageService.getObjectMetaData(
           params.area,
-          params.id
-        )
+          params.id,
+        ),
       )
       reply.code(200).send(metaData)
-    }
+    },
   )
 
   // delete object
@@ -306,7 +306,7 @@ export default function ObjectApiControllerPlugin(
       if (
         !(await fastify.objectStorageService.doesObjectExist(
           params.area,
-          params.id
+          params.id,
         ))
       ) {
         return reply.code(404).send({
@@ -317,7 +317,7 @@ export default function ObjectApiControllerPlugin(
         success: true,
         messages: `Successfully deleted object ${params.id} from area ${params.area}`,
       })
-    }
+    },
   )
 
   done()
