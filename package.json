@@ -38,7 +38,7 @@
   "dependencies": {
     "@fastify/auth": "^4.0.0",
     "@fastify/basic-auth": "^5.0.0",
-    "@fastify/helmet": "^11.0.0",
+    "@fastify/helmet": "^12.0.0",
     "@fastify/multipart": "^8.0.0",
     "@fastify/oauth2": "^7.0.0",
     "@fastify/swagger": "^8.0.0",
