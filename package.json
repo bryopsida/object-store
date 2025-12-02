@@ -39,7 +39,7 @@
     "@fastify/auth": "^5.0.0",
     "@fastify/basic-auth": "^6.0.0",
     "@fastify/helmet": "^13.0.0",
-    "@fastify/multipart": "^8.0.0",
+    "@fastify/multipart": "^9.0.0",
     "@fastify/oauth2": "^8.0.0",
     "@fastify/swagger": "^8.0.0",
     "@fastify/swagger-ui": "^4.0.0",
