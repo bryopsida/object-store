@@ -46,7 +46,7 @@
     "argon2": "^0.44.0",
     "check-disk-space": "^3.3.1",
     "config": "^4.0.0",
-    "es-main": "^1.2.0",
+    "es-main": "^1.4.0",
     "eslint-config-prettier": "^10.0.0",
     "fastify": "^5.0.0",
     "fastify-plugin": "^5.0.0",
